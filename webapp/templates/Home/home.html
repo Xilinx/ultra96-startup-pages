@@ -1,0 +1,163 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Ultra96 Home{% endblock %}</b></h1>
+  <h3> IP Address: 192.168.2.1  MAC Address: {{ value }}</h3>
+</div>
+
+<center><h2>Example Projects</h2></center>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+      <td><a href="Ultra96_LEDs.html">Ultra96 GPIO LEDs</a></td>
+       <td>Be able to control the four GPIO LEDs on the Ultra96 Board. Can have them in a constant state or as a trigger.</td>
+      </tr>
+  </tbody>
+</table>
+<br>
+
+<center><h2>Custom Content</h2></center>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="customcontent.html">Custom Content</a></td>
+      <td>View/Edit/Create a variety of different custom projects or documents created or imported by you.</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+<center><h2>Tutorials</h2></center>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="grove_starter_kit.html">Grove Starter Kit</a></td>
+      <td>Description of the different parts of the grove starter kit.</td>
+    </tr>
+    <tr>
+      <td><a href="dnf.html">dnf</a></td>
+      <td>Shows you how to create packages using the dnf package manager.</td>
+    </tr>
+    <tr>
+      <td><a href="custom_content_tutorial.html">Custom Content</a></td>
+      <td>Learn how to view/edit/create a variety of different custom projects or documents created or imported by you.</td>
+    </tr>
+    <tr>
+      <td><a href="tutorials.html">More Tutorials</a></td>
+      <td>Find the entire list of tutorials to select from here.</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+<center><h2>Board configuration</h2></center>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+   <tr>
+      <td><a href="wifi_setup.html">WiFi Setup</a></td>
+      <td>Connect to a WiFi network.</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+<center><h2>Configuration with Grove starter kit</h2></center>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="webapp_boot.html">Webapp Boot</a></td>
+      <td>Change if the webapp should automatically open for each boot or not.</td>
+    </tr>
+     <tr>
+      <td><a href="configurations.html">More Configurations</a></td>
+      <td>Find the entire list of different configurations to select from here.</td>
+    </tr>
+    <tr>
+      <td><a href="hello_world.html">Hello World with LCD</a></td>
+      <td>How to display text on the Grove RGB LCD module and change the color of the backlight (Linux IO).</td>
+    </tr>
+    <tr>
+      <td><a href="temp_display.html">Temperature and Humidity Display</a></td>
+      <td>Read data using the Digital Humidity and Temperature sensor and display the readings on the LCD Display (Linux/Atmega IO).</td>
+    </tr>
+    <tr>
+      <td><a href="led_button.html">Drive LED with Button</a></td>
+      <td>Control an LED with the use of a button (Atmega IO).</td>
+    </tr>
+    <tr>
+      <td><a href="projects.html">More Example Projects</a></td>
+      <td>Find the entire list of possible example projects to select from here.</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+{% endblock %}

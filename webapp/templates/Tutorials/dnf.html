@@ -1,0 +1,117 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+	<div class="page-header">
+		<h1 class="page-header"><b>{% block title %}dnf Tutorial{% endblock %}</b></h1>
+        </div>
+    
+        <h2>What is "dnf"?</h2>
+        <div class="well">
+	<p> DNF is a software package manager that installs, updates, and removes packages on RPM-based Linux distribution. For all of the detailed commands one can simply enter "dnf --help" into the terminal.</p>
+	<p>If you want to simply update the packages to the latest, you may do so using dnf on the <a href="dnf_update.html">dnf Package Update</a> page.</p>
+	<p>Below will be a number of sections explaining how to: search for packages, update packages, add/remove packages, and an example of using packages.</p>
+        </div>
+        
+        <h2>Search for Packages</h2>
+	<div class="well">
+	  <p>The following command will show a list of all of the packages. There are a lot of packages so it is recommended to pipe this command into a file. You can also add an optional command afterwards of the package_name to narrow down the results.
+	    <code>dnf repoquery &lt;package_name&gt;</code></p>
+	</div>
+ 
+        <h2>Update/Install Packages</h2>
+	<div class="well">
+	  <p>To update the packages and install a specific one follow the following commands:</p>
+	  <code>dnf repoquery</code>
+	  <code>dnf install -y &lt;package_name&gt;</code>
+	  <p>Alternatively you can accomplish this on the webapp by going to the <a href="dnf_update.html">dnf Update</a> page and selecting what packages you wish to update.</p>
+	</div>
+
+        <h2>Use Case Example</h2>
+	<div class="well">
+	  <p>We will show an example of how to update, install, and then use one of the packages that we install. This example specifically will enable us to play the game OpenTyrian.</p>
+	  <code>dnf repoquery</code>
+	  <code>dnf install opentyrian</code>
+	  <code>opentyrian</code>
+	  <p>Now you will be able to play the game (only shows up on the desktop).</p>
+	</div>
+
+	<h2>Add/Remove Packages</h2>
+	<div class="well">
+        <p>In this section we will explain how to write a simple "Hello World" application, compile it, and create a RPM package with CMake, install/remove it with "dnf", and run it. This will demonstrate the ease of installing and removing packages with "dnf".
+	  <ul><br>
+	    <li>Create a hello directory where you think is applicable. A recommendation could be /home/&lt;username&gt;/Desktop/hello.</li><br>
+	    <li>Install the rpm-build package using "dnf". CMake will use it to build the RPM package:<br>
+              <code>dnf install rpm-build</code>
+	    </li><br>
+	    <li>Write the "Hello World" application in hello.c in your created hello directory:<br>
+              <code>#include &lt;stdio.h&gt;<br><br>
+		    int main(int argc, char *argv[])<br>
+	 	    {<br>
+		    &nbsp;&nbsp;printf("hello world\n");<br><br>
+		    &nbsp;&nbsp;return 0;<br>
+		    }
+	      </code>
+	    </li><br>
+	    <li>Write the CMakeLists.txt file in the same directory. This is like a Makefile but is used by CMake. The following CMakeLists.txt file is very minimalistic(but works):<br>
+	      <code>cmake_minimum_required(VERSION 2.6)<br><br>
+		    PROJECT(HelloWorld)<br><br>
+	            ADD_EXECUTABLE(hello hello.c)<br>
+		    INSTALL(TARGETS hello DESTINATION /usr/bin)<br><br>
+		    SET(CPACK_GENERATOR "RPM")<br><br>
+              	    INCLUDE(CPack)
+              </code>
+	    </li><br>
+	    <li>Build the application and the RPM package. Install the RPM package with "dnf". Run the application. Remove the RPM package with "dnf".<br>
+              <code># Build<br>
+		    mkdir build<br>
+		    cd build<br>
+		    cmake ..<br>
+		    make package<br><br>
+		    # Install package<br>
+		    dnf install HelloWorld-0.1.1-Linux.rpm<br><br>
+		    # Run<br>
+		    hello<br><br>
+		    # Remove package<br>
+		    dnf remove helloworld
+	      </code>
+	    </li><br> 
+	    <li>Congratulations, if everything worked you would have seen the "Hello World" printed and would have successfully learned how to use "dnf" (along with some CMake).</li>
+	</p>
+	</div>
+{% endblock %}	

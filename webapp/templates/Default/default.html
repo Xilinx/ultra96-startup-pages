@@ -1,0 +1,145 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>{% block title %}{% endblock %}</title>
+
+    
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="{{ url_for('static', filename='css/bootstrap-theme.min.css')}}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/theme.css')}}" rel="stylesheet">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{{ url_for('static', filename='js/jquery-3.2.1.js')}}"></script>
+    <!-- Boostrap core JS -->
+    <script src="{{ url_for('static', filename='js/bootstrap.js')}}"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/Ultra96_Logo.jpg')}}"> 
+    
+   
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+ 
+    
+  <body>
+
+
+   <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="/" class="pull-left"><img src="static/images/Ultra96_Logo.jpg" class="img-responsive" width="250" height="50"/></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/home.html">Home</a></li>
+	    <li><a href="/projects.html">Example Projects</a></li>
+	    <li><a href="/customcontent.html">Custom Content</a></li>
+	    <li><a href="/tutorials.html">Tutorials</a></li>
+	    <li><a href="/configurations.html">Configurations</a></li>
+	    <li><a href="/information.html">Information/Documentation</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row row-offcanvas row-offcanvas-right">
+
+	      {% block content %}
+	      {% endblock %}
+
+        <!--
+        Xilinx Copyright page footer
+        -->
+        <hr>
+        <footer>
+          <p>&copy; 2018 Xilinx, Inc.</p>
+	  <p>Version: 1.0.0</p>
+        </footer>
+        
+      </div>
+    </div>
+    <div id="myModal" class="img-modal">
+      <span class="close">&times;</span>
+      <img class="img-modal-content" id="modalContainer">
+    </div>
+    <script>
+      var modal = document.getElementById('myModal');
+      var modalImg = document.getElementById("modalContainer");
+      var span = document.getElementsByClassName("close")[0];
+      function showImageModal(params) {
+        modal.style.display = "block";
+        modalImg.src = params.src;
+      }
+
+      span.onclick = function() { 
+        modal.style.display = "none";
+      }
+
+      function submitFormAsync(request, data) {
+         $.ajax({
+            type: request.method,
+            url: request.action,
+            data: data,
+            success: function(response) {}
+         });
+         return false;        
+      }
+
+    </script>
+  </body>
+
+</html>

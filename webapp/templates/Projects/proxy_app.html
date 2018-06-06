@@ -1,0 +1,129 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}OpenAMP Proxy Application{% endblock %}</b></h1>
+</div>
+
+<div class="alert alert-danger alert-dismissable" style="display: none" id="missing_inputs">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>ERROR: All inputs must be provided!</strong>
+</div>
+
+<h2>Description</h2>
+<div class="well">
+  <p>Proxy Application</p>
+  <p>This application creates a proxy between the Linux master and the remote core, which allows the remote firmware to use console and execute file I/O on the master</p>
+  <p>More information can be found in the latest <a href="https://www.xilinx.com/scr/search?output=xml_no_dtd&ie=UTF-8&oe=UTF-8&getfields=*&filter=0&site=EntireSite&num=200&client=allsite&proxystylesheet=allsite&show_dynamic_navigation=0&allVersions=1&sort=meta:Last%2520Modified%2520Date%3AD%3AED&emsingleres=/scr&cqroot=&proxyreload=0&requiredfields=-XilinxRobots:noindex&resultsView=&q=+inmeta:Document%2520Class%3DDocument+inmeta:Product%2520Type%3DSilicon%2520Devices+inmeta:Product%2520Type%3DDesign%2520Tools+inmeta:Document%2520ID%3DUG1186">UG1186</a> documentation (an internet connection is required to view this page).</p>
+</div>
+
+<form id="proxy_app_form" action="proxy_app.html" method="post" onsubmit="return checkInputs()">
+<div class="form-group">
+  <label for="usr">Name:</label>
+  <input type="text" class="form-control" id="Username" name="username"  onkeyup="disableField()"/>
+</div>
+<div class="form-group">
+  <label for="usr">Age:</label>
+  <input type="number" class="form-control" id="Age" name="age" onkeyup="disableField()" min=0 max =100 disabled = "" onkeypress="return isInt(event)"/>
+  <a>Numeric values are accepted</a>
+</div>
+<div class="form-group">
+  <label for="usr">Value of Pi:</label>
+  <input class="form-control" id="pi" name="pi" onkeypress="return isFloat(event)" disabled = ""/>
+  <a>Floating values are accepted</a>
+</div>
+<br>
+<center><button type="submit" class="btn btn-primary btn-lg">Run Project</button>
+</center>
+
+</form>
+
+<div>
+  <label for="textarea"><h2>Output</h2></label>
+  <textarea readonly class="form-control" id="textarea" rows="20">{{ output }}</textarea>
+</div>
+
+
+<script>
+
+function disableField() {
+
+	var isName = document.getElementById("Username").value.length > 0;
+	var isAge = document.getElementById("Age").value.length > 0;
+
+	if (!isName) document.getElementById("Age").disabled = true;
+	else document.getElementById("Age").disabled = false;
+
+	if (!(isName && isAge)) document.getElementById("pi").disabled = true;
+	else document.getElementById("pi").disabled = false;
+
+}
+function isInt(evt) {
+	evt = (evt) ? evt : window.event;
+	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57 )) {
+		return false;
+	}
+	return true;
+}
+
+function isFloat(evt) {
+	evt = (evt) ? evt : window.event;
+	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57 )) {
+		return false;
+	}
+	return true;
+}
+
+function checkInputs() {
+	var name = document.getElementById("Username").value;
+	var age = document.getElementById("Age").value;
+	var pi = document.getElementById("pi").value;
+	if (name && age && pi) {
+		return true;
+	} else {
+		document.getElementById("missing_inputs").style.display="block";
+		return false;
+	}
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,192 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Custom Back End{% endblock %} ("{{filename}}")</b></h1>
+</div>
+
+<div class="alert alert-success alert-dismissable" style="display: {{ filecreated }}">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>Successfully saved file.</strong>
+</div>
+
+<div class="alert alert-danger alert-dismissable" style="display: {{ fileexists }}">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>File already exists. Try another file name.</strong>
+</div>
+
+
+<style type="text/css" media="screen">
+  #editor {
+    width: 100%;
+    height: 50vh;
+    min-height: 300px;
+  }
+</style>
+
+
+<div class="modal fade" id="saveModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h4 class="modal-title">Save File</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+	  <p>Filename will automatically append ".py" ending.<br>Valid characters: [a-z][A-Z][0-9][_].</p>
+	  <label for="filename">Filename:</label>
+	  <input type="text" class="form-control" id="filename">
+	</div>
+	<div class="modal-footer">
+	  <button type="button" onclick="saveFile()" class="btn btn-defualt" data-dismiss="modal">Save</button>
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="settingsModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h4 class="modal-title">Editor Settings</h4>
+      </div>
+      <div class="modal-body">
+	<div class="form-group">
+	  <h3>Theme</h3>	
+	  <select class="form-control" id="theme">
+	    <optgroup label="Light">
+   	      <option>Eclipse</option>         
+	      <option>TextMate</option>
+	    </optgroup>
+	    <optgroup label="Dark" selected>
+	      <option>Cobalt</option>
+	      <option>Terminal</option>
+	      <option selected>Twilight</option>
+	    </optgroup>
+	  </select>
+	  <h3>Editor Type</h3>	
+	  <select class="form-control" id="editortype">
+   	    <option selected>Default</option>         
+	    <option>Vim</option>
+	    <option>Emacs</option>
+	  </select>
+
+	</div>
+	<div class="modal-footer">
+          <button type="button" onclick="confirmSettings()" class="btn btn-default" data-dismiss="modal">Save</button>
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#saveModal">Save File</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#settingsModal">Change Settings</button>
+<a class="btn btn-primary" href="reload_webapp.html">Back</a>
+
+
+<form id="editor_form" method="post">
+  <input name="request" id="request" type="hidden">
+  <input name="filename_form" id="filename_form" type="hidden">
+  <input name="code" id="code" type="hidden">
+</form>
+
+<script>
+  function saveFile(){
+    //Check if filename is acceptable
+    var filename = document.getElementById("filename").value;
+    var allowed_chars = /^[A-Za-z0-9_]+$/;
+    var editor = ace.edit("editor");
+    var code = editor.getValue();
+    if (filename.match(allowed_chars)) {
+      document.getElementById("request").value = "save";
+      document.getElementById("filename_form").value = filename;
+      document.getElementById("code").value = code;
+      document.getElementById("editor_form").submit();
+    } else {
+      alert("Filename provided has invalid characters!");
+    }
+  }
+</script>
+
+<script>
+  function confirmSettings(){
+    var theme = document.getElementById("theme").value;
+    var type = document.getElementById("editortype").value;
+    var editor = ace.edit("editor");
+    switch(theme) {
+      case "Eclipse":
+        editor.setTheme("ace/theme/eclipse"); break;
+      case "TextMate":
+        editor.setTheme("ace/theme/textmate"); break;
+      case "Cobalt":
+        editor.setTheme("ace/theme/cobalt"); break;
+      case "Terminal":
+        editor.setTheme("ace/theme/terminal"); break;
+      default:
+        editor.setTheme("ace/theme/twilight");
+    }
+    switch(type) {
+      case "Vim":
+        editor.setKeyboardHandler("ace/keyboard/vim"); break;
+      case "Emacs":
+        editor.setKeyboardHandler("ace/keyboard/emacs"); break;
+      default:
+        editor.setKeyboardHandler("");
+    }
+  }
+</script>
+
+<pre id="editor">
+{{ code }}
+</pre>
+
+<script src="{{ url_for('static', filename='src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+<script>
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/twilight");
+  editor.session.setMode("ace/mode/python");
+</script>
+
+{% endblock %}

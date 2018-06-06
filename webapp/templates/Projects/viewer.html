@@ -1,0 +1,289 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Viewer{% endblock %} ("{{filename}}")</b></h1>
+</div>
+
+<style type="text/css" media="screen">
+  #editor {
+    width: 100%;
+    height: 70vh;
+    min-height: 300px;
+  }
+</style>
+
+<div class="modal fade" id="logModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h4 class="modal-title">Save File</h4>
+      </div>
+      <div class="modal-body">
+	<div class="form-group">
+          <div class="well">
+            <code>{{ log }}</code>
+          </div>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="settingsModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h4 class="modal-title">Editor Settings</h4>
+      </div>
+      <div class="modal-body">
+	<div class="form-group">
+	  <h3>Language</h3>	
+	  <select class="form-control" id="language">
+   	    <option>C/C++</option>         
+	    <option>CSS</option>
+	    <option>HTML</option>
+	    <option>LaTeX</option>
+	    <option>Makefile</option>
+	    <option>Plain Text</option>
+	    <option selected>Python</option>
+	    <option>Tcl</option>
+	    <option>Verilog</option>
+	    <option>VHDL</option>
+	  </select>
+	  <h3>Theme</h3>	
+	  <select class="form-control" id="theme">
+	    <optgroup label="Light">
+   	      <option>Eclipse</option>         
+	      <option>TextMate</option>
+	    </optgroup>
+	    <optgroup label="Dark" selected>
+	      <option>Cobalt</option>
+	      <option>Terminal</option>
+	      <option selected>Twilight</option>
+	    </optgroup>
+	  </select>
+	  <h3>Editor Type</h3>	
+	  <select class="form-control" id="editortype">
+   	    <option selected>Default</option>         
+	    <option>Vim</option>
+	    <option>Emacs</option>
+	  </select>
+
+	</div>
+	<div class="modal-footer">
+          <button type="button" onclick="confirmSettings()" class="btn btn-default" data-dismiss="modal">Save</button>
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#logModal">View Code Log</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#settingsModal">Change Settings</button>
+<button type="button" id="run" class="btn btn-primary" onclick="runCode()">Run Code</button>
+<button type="button" class="btn btn-primary" onclick="saveCode()">Save Code</button>
+<button type="button" class="btn btn-primary" onclick="revertCode()">Revert Code</button>
+<form action="projects.html" method="get">
+  <button type="submit" class="btn btn-primary">Back</button>
+</form>
+
+<form id="editor_form" method="post">
+  <input name="request" id="request" type="hidden">
+  <input name="code" id="code" type="hidden">
+</form>
+
+<script>
+  var timeleft = "{{remaining_time}}";
+  var runbutton = document.getElementById("run");
+  var timer_status = "{{timer_status}}";
+  if (timer_status == "timer_enabled") {
+    runbutton.disabled = true;
+    var timer = setInterval(function() {
+      timeleft--;
+      runbutton.textContent = "Project Running " + timeleft + " s";
+      if (timeleft <= 0) {
+        clearInterval(timer);
+	runbutton.disabled = false;
+	runbutton.textContent = "Run Code";
+	timer_status = "timer_disabled";
+      }
+    }, 1000);
+  }
+  function runCode(){
+    var language = document.getElementById("language").value;
+    var editor = ace.edit("editor");
+    var code = editor.getValue();
+    var form = document.getElementById("editor_form");
+    document.getElementById("request").value = "run";
+    document.getElementById("code").value = code;
+    form.submit();
+  }
+</script>
+
+
+<script>
+  function saveCode(){
+    var editor = ace.edit("editor");
+    var code = editor.getValue();
+    var data = {};
+    data.request = "save";
+    data.code = code;
+    submitFormAsync(document.getElementById("editor_form"), data);
+  }
+</script>
+
+<form id="revert_form" method="post">
+  <input name="revert" id="revert" type="hidden">
+</form>
+
+<script>
+  function revertCode(){
+    var editor = ace.edit("editor");
+    var form = document.getElementById("revert_form");
+    form.submit();
+  }
+</script>
+
+<script>
+  function confirmSettings(){
+    var language = document.getElementById("language").value;
+    var theme = document.getElementById("theme").value;
+    var type = document.getElementById("editortype").value;
+    var editor = ace.edit("editor");
+    switch(language) {
+      case "C/C++":
+        editor.session.setMode("ace/mode/c_cpp"); break;
+      case "CSS":
+        editor.session.setMode("ace/mode/css"); break;
+      case "HTML":
+        editor.session.setMode("ace/mode/html"); break;
+      case "LaTeX":
+        editor.session.setMode("ace/mode/latex"); break;
+      case "Makefile":
+        editor.session.setMode("ace/mode/makefile"); break;
+      case "Plain Text":
+        editor.session.setMode("ace/mode/plain_text"); break;
+      case "Tcl":
+        editor.session.setMode("ace/mode/tcl"); break;
+      case "Verilog":
+        editor.session.setMode("ace/mode/verilog"); break;
+      case "VHDL":
+        editor.session.setMode("ace/mode/vhdl"); break;
+      default:
+        editor.session.setMode("ace/mode/python");
+    }
+    switch(theme) {
+      case "Eclipse":
+        editor.setTheme("ace/theme/eclipse"); break;
+      case "TextMate":
+        editor.setTheme("ace/theme/textmate"); break;
+      case "Cobalt":
+        editor.setTheme("ace/theme/cobalt"); break;
+      case "Terminal":
+        editor.setTheme("ace/theme/terminal"); break;
+      default:
+        editor.setTheme("ace/theme/twilight");
+    }
+    switch(type) {
+      case "Vim":
+        editor.setKeyboardHandler("ace/keyboard/vim"); break;
+      case "Emacs":
+        editor.setKeyboardHandler("ace/keyboard/emacs"); break;
+      default:
+        editor.setKeyboardHandler("");
+    }
+
+  }
+
+
+  function setEditorMode(extension) {
+   switch(extension) {                                                        
+      case "c":                                                            
+      case "cpp":
+      case "ino":
+        document.getElementById("language").value = "C/C++"; break;                      
+      case "css":                                                          
+        document.getElementById("language").value = "CSS"; break;                 
+      case "html":                                             
+        document.getElementById("language").value = "HTML"; break;        
+      case "LaTeX":                                                                                                     
+        document.getElementById("language").value = "LaTeX"; break;                                                                
+      case "Makefile":                                                                                                  
+        document.getElementById("language").value = "Makefile"; break;                                                             
+      case "py":                                                                                                
+        document.getElementById("language").value = "Python"; break;                                                           
+      case "tcl":                                                                                                       
+        document.getElementById("language").value = "Tcl"; break;                                                                  
+      case "v":                                                                                                   
+        document.getElementById("language").value = "Verilog"; break;                                                              
+      case "vhd":                                                                                                      
+        document.getElementById("language").value = "VHDL"; break;                                                                 
+      default:                                                                                                          
+        document.getElementById("language").value = "Plain Text";                                                            
+    	}
+	confirmSettings();	 
+ }
+                   
+</script>
+
+<pre id="editor">
+{{ code }}
+</pre>
+
+
+<script src="{{ url_for('static', filename='src-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+<script>
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/twilight");
+  var sourcefilename = "{{filename}}";
+  var fileNameExt = sourcefilename.split('.').pop();          
+  if (!fileNameExt) fileNameExt = sourcefilename;
+  setEditorMode(fileNameExt);   
+</script>
+
+{% endblock %}

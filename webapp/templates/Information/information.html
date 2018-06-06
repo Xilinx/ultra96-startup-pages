@@ -1,0 +1,90 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Information and Documentation{% endblock %}</b></h1>
+</div>
+
+<div class="container">
+  <img class="img-responsive center-block" style="width:640px;" src="{{url_for('static', filename='images/Ultra96.png')}}" onclick="showImageModal(this)"/>
+  <ul class="features" style="list-style-position:inside">  
+    <h2>Ultra96 Specification</h2>
+    <li>Zynq UltraScale+ MPSoC ZU3EG A484</li>
+    <li>2GByte (512M x32) LPDDR4 Memory</li>
+    <li>MicroSD Socket</li>
+    <li>Wi-Fi / Bluetooth</li>
+    <li>DisplayPort</li>
+    <li>1x USB 3.0 Micro-B upstream port</li>
+    <li>2x USB 3.0 Type A downstream ports</li>
+    <li>40-pin Low-speed expansion header</li>
+    <li>60-pin High speed expansion header</li>
+    <li>85mm x 54mm form factor</li>
+    <li>Linaro 96Boards Consumer Edition compatible </li>
+  </ul>
+</div>
+        
+
+<h2>Documents</h2>
+<table class="table table-bordered">
+  <tbody id="table-id">
+    <script>
+      var file_list = ['{{ ', '.join(files) }}']
+      file_list = file_list[0].split(", ");
+      var table = document.getElementById("table-id");
+      for (var i = 0; i < file_list.length; i++) {
+        var row = table.insertRow(0);
+	var cell1 = row.insertCell(0);
+	var link = document.createElement("a");
+	link.setAttribute("href", "/static/documents/"+file_list[i]);
+	link.setAttribute("target", "iframe-webpage");
+	link.innerHTML = file_list[i];
+	cell1.appendChild(link);
+      }
+    </script>
+  </tbody>
+</table>
+
+<div class="embed-responsive embed-responsive-16by9">
+  <iframe class="embed-responsive-item" name="iframe-webpage">
+    <p>Your browser does not support iframe.</p>
+  </iframe>
+</div>
+
+{% endblock %}

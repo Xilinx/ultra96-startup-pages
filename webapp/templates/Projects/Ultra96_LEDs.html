@@ -1,0 +1,231 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+	<div class="page-header">
+	  <h1 class="display-4"><b>{% block title %}Ultra96 GPIO LEDs{% endblock %}</b></h1>
+        </div>
+   
+
+	<img class="center-block img-responsive"  src="static/images/ultra96_led.png" onclick="showImageModal(this)"/>
+
+	<!--
+        User LEDs 0-3 dropbdown button options as well as LED triggers and LED brightness notifications
+	-->
+	<div class="row text-center">
+	<td><b>LED0/DS2</b><br>
+          <select id="dropdown">
+	    <option disabled="disabled" selected="selected" value="0">Unknown</option>
+	    <option value="0">On</option>
+	    <option value="0">Off</option>
+            <option value="0">Linux Heartbeat</option>
+            <option value="0">Linux backlight</option>
+            <option value="0">Linux gpio</option>
+            <option value="0">Linux cpu0</option>
+            <option value="0">Linux cpu1</option>
+            <option value="0">Linux cpu2</option>
+            <option value="0">Linux cpu3</option>
+            <option value="0">Linux default-on</option>
+            <option value="0">Linux transient</option>
+            <option value="0">Linux flash</option>
+            <option value="0">Linux torch</option>
+            <option value="0">Linux mmc1</option>
+            <option value="0">Linux rfkill0</option>
+            <option value="0">Linux phy0tx</option>
+            <option value="0">Linux phy0rx</option>
+            <option value="0">Linux phy0assoc</option>
+            <option value="0">Linux phy0radio</option>
+            <option value="0">Linux hci0-power</option>
+            <option value="0">Linux rfkill1</option>
+	  </select>
+	</td><br><br>
+	<td><b>LED1/DS3</b><br>
+          <select id="dropdown">
+	    <option disabled="disabled" selected="selected" value="1" readonly="true">Unknown</option>
+	    <option value="1">On</option>
+	    <option value="1">Off</option>
+            <option value="1">Linux Heartbeat</option>
+            <option value="1">Linux backlight</option>
+            <option value="1">Linux gpio</option>
+            <option value="1">Linux cpu0</option>
+            <option value="1">Linux cpu1</option>
+            <option value="1">Linux cpu2</option>
+            <option value="1">Linux cpu3</option>
+            <option value="1">Linux default-on</option>
+            <option value="1">Linux transient</option>
+            <option value="1">Linux flash</option>
+            <option value="1">Linux torch</option>
+            <option value="1">Linux mmc1</option>
+            <option value="1">Linux rfkill0</option>
+            <option value="1">Linux phy0tx</option>
+            <option value="1">Linux phy0rx</option>
+            <option value="1">Linux phy0assoc</option>
+            <option value="1">Linux phy0radio</option>
+            <option value="1">Linux hci0-power</option>
+            <option value="1">Linux rfkill1</option>
+	  </select>
+	  </select>
+	</td><br><br>
+	<td><b>LED2/DS5</b><br>
+          <select id="dropdown">
+            <option disabled="disabled" selected="selected" value="2">Unknown</option>
+	    <option value="2">On</option>
+	    <option value="2">Off</option>
+            <option value="2">Linux Heartbeat</option>
+            <option value="2">Linux backlight</option>
+            <option value="2">Linux gpio</option>
+            <option value="2">Linux cpu0</option>
+            <option value="2">Linux cpu1</option>
+            <option value="2">Linux cpu2</option>
+            <option value="2">Linux cpu3</option>
+            <option value="2">Linux default-on</option>
+            <option value="2">Linux transient</option>
+            <option value="2">Linux flash</option>
+            <option value="2">Linux torch</option>
+            <option value="2">Linux mmc1</option>
+            <option value="2">Linux rfkill0</option>
+            <option value="2">Linux phy0tx</option>
+            <option value="2">Linux phy0rx</option>
+            <option value="2">Linux phy0assoc</option>
+            <option value="2">Linux phy0radio</option>
+            <option value="2">Linux hci0-power</option>
+            <option value="2">Linux rfkill1</option>
+	  </select>
+	  </select>
+	</td><br><br>
+	<td><b>LED3/DS4</b><br>
+          <select id="dropdown">
+            <option disabled="disabled" selected="selected" value="3">Unknown</option>
+	    <option value="3">On</option>
+	    <option value="3">Off</option>
+            <option value="3">Linux Heartbeat</option>
+            <option value="3">Linux backlight</option>
+            <option value="3">Linux gpio</option>
+            <option value="3">Linux cpu0</option>
+            <option value="3">Linux cpu1</option>
+            <option value="3">Linux cpu2</option>
+            <option value="3">Linux cpu3</option>
+            <option value="3">Linux default-on</option>
+            <option value="3">Linux transient</option>
+            <option value="3">Linux flash</option>
+            <option value="3">Linux torch</option>
+            <option value="3">Linux mmc1</option>
+            <option value="3">Linux rfkill0</option>
+            <option value="3">Linux phy0tx</option>
+            <option value="3">Linux phy0rx</option>
+            <option value="3">Linux phy0assoc</option>
+            <option value="3">Linux phy0radio</option>
+            <option value="3">Linux hci0-power</option>
+            <option value="3">Linux rfkill1</option>
+	  </select>
+	  </select>
+        </td>
+	</div>
+
+        <script>
+        $(document).ready(function(){
+	  $("select").on("change", function(){
+            var led_selected = $(this).find(":selected").val();
+	    var led_command = $(this).find(":selected").text();
+            $.post("Ultra96_LEDs.html",
+	    {
+              led: led_selected,
+	      command: led_command
+	    });
+	  });
+	});
+        </script>
+
+
+	<h2>Instructions</h2>
+        <div class="well">
+         <p>There are 4 GPIO LEDs on the Ultra96 that can be controlled by the user and are located as shown in the image above. A user can control the LEDs through this webapp by changing what state they should be or what trigger they should be. The states are simply "On" and "Off" but the triggers are more confusing since they can provide more useful information to the user. The table of triggers and what they do is listed below. It is important to note that the triggers only turn "On"  when triggered and start in the "Off" state. </p>
+        </div>
+
+
+
+	<table class="table table-bordered">
+          <thead>
+	    <tr>
+	      <th>Trigger</th>
+	      <th>Definition</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>heartbeat</td>
+	      <td>A heartbeat provided by linux to know that it is still active</td>
+            </tr>
+	    <tr>
+              <td>backlight</td>
+	      <td>To indicate LCD backlight status. Turns ON when LCD backlight is ON else turns OFF</td>
+	    </tr>
+	    <tr>
+              <td>gpio</td>
+	      <td>A trigger to turn ON LED when Input or output operations are being performed with any of the GPIO else turns OFF LED</td>
+	    </tr>
+	    <tr>
+              <td>cpu0</td>
+	      <td>A trigger to turn ON LED when CPU0 is being used and turn OFF when not in use</td>
+	    </tr>
+	    <tr>
+              <td>cpu1</td>
+	      <td>A trigger to turn ON LED when CPU1 is being used and turn OFF when not in use</td>
+	    </tr>
+	    <tr>
+              <td>cpu2</td>
+	      <td>A trigger to turn ON LED when CPU2 is being used and turn OFF when not in use</td>
+	    </tr>
+	    <tr>
+              <td>cpu3</td>
+	      <td>A trigger to turn ON LED when CPU3 is being used and turn OFF when not in use</td>
+	    </tr>
+	    <tr>
+              <td>phy0tx</td>
+	      <td>A trigger turns ON LED when Wi-Fi is transmitting data else turns OFF LED</td>
+	    </tr>
+	    <tr>
+              <td>phy0rx</td>
+	      <td>A trigger turns ON LED when Wi-Fi is receiving data else turns OFF LED</td>
+	    </tr>
+
+	  </tbody>
+	</table>
+
+{% endblock %}

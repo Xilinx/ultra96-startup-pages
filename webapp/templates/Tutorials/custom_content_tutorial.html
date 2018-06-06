@@ -1,0 +1,73 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Custom Content Tutorial{% endblock %}</b></h1>
+</div>
+          
+<h2>About</h2>
+<div class="well">
+  <h4>This tutorial explains the 3 different ways a user can add their own custom content:</h4><br/>
+  <ul>
+    <li>Upload custom files</li><br>
+    <li>Create your own webpages and add them to the webapp</li><br>
+    <li>Create your own projects that can run on the board</li><br>
+  </ul>
+</div>
+
+<h2>Upload Custom Files</h2>
+<div class="well">
+  <p>If a user wishes to upload a file from a device onto the board without needing to ssh into the board this is a quick and easy to use alternative.</p>
+  <p>To upload a file simply press the grey "Browse..." button. This will open up a window on your browser allowing you to locate and add the desired file. One selected the name of the file should be shown beside the "Browse..." button. Then simply press the "Upload" and the file will be uploaded onto the board. The file can be edited or deleted. If the user wishes to edit the file, it will open up the file contents in an editor.</p>
+</div>
+
+<h2>Custom Webpages</h2>
+<div class="well">
+	<p>By pressing the "Edit Webapp" button a user will be brought to another page where they can create the front end and/or back end for their own webpage. Because the user can write both front and backend their webpage can be as complicated or simple as desired. Templates for both front and back end are provided as a starting point. In order to add a file to the webapp both a front end and back end must be created with the same name (excluding suffix) and all appropriate changes must be made that are specified in the templates.</p>
+	<p>The back end is written using the Flask microframework in Python which is based on Werkzeug and Jinja 2. More information of how to use Flask can be found <a href="flask.pocoo.org">here</a> (internet connection needed to view page). The front end is in HTML which a user can embed JavaScript, CSS, Flask, and more into.</p>
+	<p>Once both front end and back end is completed you can either edit them by clicking on the name of the file on the "Webapp Reload" page, delete the files, or include them in the new webapp. To add your files to the actual webapp check the "Include" button on the files that you wish to include and press "Reload Webapp". This will return a message of success and then reboot the board. To see your changes you will have to reconnect to the boards AP again. Once you have added your custom webpages and go back to the Custom Content page you will have the ability to press the "View" button which will make a simple GET request with no parameters to your webpage. From your webpage the power is all in the users hands.</p>
+</div>
+
+<h2>Custom Projects</h2>
+<div class="well">
+	<p>For any custom code a user wishes to write can be done by pressing the "Custom Project" button. This will open up the editor in which a user can create their own piece of code and run it. At the moment only Python can be ran but all other forms of code can be written and saved. The user can also change the settings of the editor if they prefer to use different backgrounds, editor types (vim, emacs, etc), or language syntax highlighting.</p>
+</div>
+
+{% endblock %}

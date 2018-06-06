@@ -1,0 +1,144 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %} {% block content %}
+
+<div class="page-header">
+    <h1 class="display-4"><b>{% block title %}Grove Starter Kit Tutorial{% endblock %}</b></h1>
+</div>
+
+<h2>About</h2>
+<div class="well">
+	<p>Grove is a system for wiring up sensor and control modules using standardized connectors and cables. It makes it easy to hook up any of the 100s of available Grove modules to a microprocessor system without a messy tangle of wires. Each module provides a single function, such as sensing temperature or driving an LCD.</p>
+	<p>All kit parts have their name at the bottom of each part.</p>
+</div>
+<h2>Included in this Kit</h2>
+<div class="well">
+    <ul class="features" style="list-style-position:inside">
+        <li><b>96Boards Sensors Mezzanine</b></li>
+        <p>This is the adapter for connecting Grove modules to a 96Boards baseboard. It provides 18 Grove connectors, an Arduino compatible shield socket, and an ATMEGA328P microcontroller.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/96Boards_Sensor_Mezzanine.png')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Button Module (3.3V/5V)</b></li>
+        <p>This Grove module is a simple momentary on/off button. When pressed, it pulls the data line up to VCC to output a HIGH signal. When released, the data line drops down to output LOW.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Button_Module.png')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Touch Sensor Module (3.3V/5V)</b></li>
+        <p>A simple touch sensor that behaves in a similar fashion to the button. Outputs high when touching the sensor with finger, and low otherwise.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Touch_Sensor_Module.png')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove LED Socket Module (3.3V/5V)</b></li>
+        <p>An LED in Grove module form. Plug your favourite colour of LED into the socket, and it will glow brightly when the signal line is driven HIGH. Long part of the LED goes into the "+" and the short side goes into the "-".</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_LED_Socket_Module.png')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Buzzer Module (5V only)</b></li>
+        <p>This module is a piezo buzzer that will emit a tone when the data line is driven HIGH, or can be made to play notes and effects by connecting it to a pulse-width modulation (PWM) output.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Buzzer_Module.jpg')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Rotary Angle Sensor Module (3.3V/5V)</b></li>
+        <p>This Grove module outputs an analog signal between 0V and VCC based on the position of the potentiometer. It has an angular range of 300 degrees.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Rotary_Angle_Sensor_Module.png')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Sound Sensor (5V only)</b></li>
+        <p>This is a sound sensing module with a simple microphone. It can be used to detect the volume of sound in the area. The resistance of the sensor decreases as the level of sound increases.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Sound_Sensor.jpg')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Light Sensor (3.3V/5V)</b></li>
+        <p>This module detects the intensity of light shining on the sensor. The resistance of the sensor decreases as the amount of illumination increases.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Light_Sensor.png')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Servo (5V only)</b></li>
+        <p>The Grove servo is an actuator that is controlled by a PWM signal. The angle of the servo can be adjusted by changing the pulse width of the input PWM signal.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Servo.jpg')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Relay (3.3V/5V)</b></li>
+        <p>The Grove Relay has a normally-open SPST relay that is controlled by a single digital pin. It can be used to control power at much higher voltages that the Sensors mezzanine can handle. When the signal is LOW the relay is open. When it is driven HIGH the relay will close. Use it to control lights and equipment at up to 250V at 10 amps, but be careful when working with mains voltages.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Relay.png')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove Temperature and Humidity Sensor (3.3V/5V)</b></li>
+        <p>This Grove module is a high accuracy temperature and humidity sensor.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Temerature_and_Humidity_Sensor.png')}}" onclick="showImageModal(this)" /><br/>
+
+        <li><b>Grove RGB Backlight LCD (5V only)</b></li>
+        <p>This is a great little display module that is easy to control. It is a 16x2 character display with an RGB backlight controller so you can set it to whatever colour you like. This module is controlled using the I2C bus.</p>
+    	<img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_RGB_Backlight_LCD.jpg')}}" onclick="showImageModal(this)" /><br/>
+
+    </ul>
+</div>
+<h2>Introduction to the 96Boards Sensors Mezzanine</h2>
+<div class="well">
+    <p>The 96Boards Sensors Mezzanine board included in this kit is an IO adapter for connecting sensors, actuators and other devices to any 96Boards baseboard. The Sensors mezzanine has exactly the same footprint as a standard size 96Boards Consumer Edition baseboard and fits perfectly on top. Sensors and other devices are connected to the board via 4 pin Grove connectors or via the Arduino compatible shield socket. Additionally, the Sensors mezzanine has a USB to UART adapter for accessing the 96Boards UART console.</p>
+
+    <p><b>Features</b></p>
+    <img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Grove_Mezzanine_Features.png')}}" onclick="showImageModal(this)" /><br/>
+
+    <ol>
+    	<li>Low Speed Expansion connector</li>
+    	<li>USB UART console connector</li>
+    	<li>Reset and Power buttons</li>
+    	<li>5V I2C Grove connectors</li>
+    	<li>5V GPIO Grove connector</li>
+    	<li>3.3V I2C Grove connectors</li>
+    	<li>3.3V GPIO Grove connectors</li>
+    	<li>ATMEGA D3-D7 Grove connectors</li>
+    	<li>ATMEGA A0-A2 Grove connectors</li>
+    	<li>ATMEGA I2C Grove connector</li>
+    	<li>ATMEGA Arduino compatible socket</li>
+    	<li>ATMEGA Reset and Power LEDs</li>
+    </ol>
+        
+</div>
+<h2>How to properly attach the Mezzanine Board to Ultra96</h2>
+<div class="well">
+    <img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Mezzanine_Board_To_Ultra96.png')}}" onclick="showImageModal(this)" /><br/>
+    <ul class="features" style="list-style-position:inside">
+    	<li>Ensure that the power supply is unplugged from the Ultra96 board.</li>
+    	<li>Plug the 96board Mezzaning Board from the “Grove Kit” on to the Ultra96 board as shown in figure.</li>
+    </ul>        
+</div>
+<h2>How to attach the Sensors to the Mezzanine Board</h2>
+<div class="well">
+    <img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Sensors_On_Board.jpg')}}" onclick="showImageModal(this)" /><br/>
+    <ul class="features" style="list-style-position:inside">
+    	<li>Connect the Touch sensor and Relay from the “Grove Kit” to the Mezzaning board via the cable provided as shown in figure.</li>
+    	<li>Connect the Light sensore and Buzzer to the Mezzaning board via the cable provided as shown in figure.</li>
+    	<li>Connect the Temprature and Humidity sensore to the Mezzaning board via the cable provided as shown in figure.</li>
+    	<li>Connect the LED, Button and LCD screen to the Mezzaning board via the cable provided as shown in figure.</li>
+    </ul>        
+</div>
+
+{% endblock %}

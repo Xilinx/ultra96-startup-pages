@@ -1,0 +1,97 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Example Projects{% endblock %}</b></h1>
+</div>
+    
+<h2>Information</h2>
+<div class="well">
+  <p>On this page you can select a variety of example projects created for the Ultra96. Listed below is a table with the name of each project and its description. Clicking on the project (which should be blue and underlined) will send you to another page that will explain how to setup and run that specific project. For more information on the Grove Sensor Kit please visit <a href="grove_starter_kit.html">Grover Starter Kit</a>.</p>
+</div>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Project</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="Ultra96_LEDs.html">Ultra96 GPIO LEDs</a></td>
+      <td>Be able to control the four GPIO LEDs on the Ultra96 Board. Can have them in a constant state or as a trigger.</td>
+    </tr>
+    <tr>
+      <td><a href="matrix_mult.html">OpenAMP Matrix Multiplication</a></td>
+      <td>Provides a complex test that generates two matrices on the Linux master which are then sent to the remote to multiply them. Then they are sent back to the master to display the result.</td>
+    </tr>
+    <tr>
+      <td><a href="proxy_app.html">OpenAMP Proxy Application</a></td>
+      <td>Application creates a proxy between the linux master and the remote core, which allows the remote firmware to use console and execute file I/O on the master.</td>
+    </tr>
+    <tr>
+      <td><a href="hello_world.html">Hello World with LCD</a></td>
+      <td>How to display text on the Grove RGB LCD module and change the color of the backlight (Linux IO).</td>
+    </tr>
+    <tr>
+      <td><a href="touch_sensor.html">Touch Sensor and Relay</a></td>
+      <td>A system that toggles a relay on and off when the touch sensor is tapped (Linux IO).</td>
+    </tr>
+    <tr>
+      <td><a href="led_button.html">Drive LED with Button</a></td>
+      <td>Control an LED with the use of a button (Atmega IO).</td>
+    </tr>
+    <tr>
+      <td><a href="buzz_light_sensor.html">Buzzer and Light Sensor</a></td>
+      <td>Use the Grove light sensor and Grove buzzer to be silent when there is light and emit noise when it is dark (Atmega IO).</td>
+    </tr>
+    <tr>
+      <td><a href="temp_display.html">Temperature and Humidity Display</a></td>
+      <td>Read data using the Digital Humidity and Temperature sensor and display the readings on the LCD Display (Linux/Atmega IO).</td>
+    </tr>
+    <tr>
+      <td><a href="tweeting_doorbell.html">Tweeting Doorbell</a></td>
+      <td>Sends a message out to twitter every time the button is pressed (Linux/Atmega IO).</td>
+    </tr>
+  </tbody>
+</table>
+ 
+{% endblock %}

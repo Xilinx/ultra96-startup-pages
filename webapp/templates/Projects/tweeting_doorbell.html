@@ -1,0 +1,196 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Tweeting Doorbell{% endblock %}</b></h1>
+</div>
+
+<div class="alert alert-danger alert-dismissable" style="display: none" id="ssid_missing">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>ERROR: Missing Twitter Info!</strong>
+</div>
+
+<h2>Description</h2>
+<div class="well">
+  <p>In the project you will run an application that takes input from sensors and then communicates on the Internet(optional). The project creates a "tweeting" doorbell which sends a message out to twitter every time the button is pressed(optional) and sounds a buzzer. For more information on the Grove Sensor Kit please visit <a href="grove_starter_kit.html">Grover Starter Kit</a>.</p>
+</div>
+
+<h2>Extra Setup</h2>
+<div class="well"> 
+  <p>If you wish to communicate with Twitter some extra setup is required, otherwise this section can be skipped. You will need to have a twitter account and obtain oauth details from <a href="https://apps.twitter.com">https://apps.twitter.com</a> by creating an app. Enter the oauth details below and hit the "Save Details" button. Lastly you will need to be connected to the internet on the Ultra96 Board. One way to do this is by going connecting to a <a href="/wifi_setup.html">WiFi Device</a>.</p>
+</div>
+
+<form id="tweet" action="tweeting_doorbell.html" method="post">
+<input class="form-control" name="tweeter" id="tweeter" type="hidden" value="notweet">
+<div class="form-group">
+  <label for="usr">consumer_key:</label>
+  <input type="text" class="form-control" id="usr_key" name="usr_key" disabled="">
+</div>
+<div class="form-group">
+  <label for="usr">consumer_secret:</label>
+  <input type="text" class="form-control" id="usr_secret" name="usr_secret" disabled="" >
+</div>
+<div class="form-group">
+  <label for="usr">access_token:</label>
+  <input type="text" class="form-control" id="usr_token" name="usr_token" disabled="">
+</div>
+<div class="form-group">
+  <label for="usr">access_token_secret:</label>
+  <input type="text" class="form-control" id="usr_token_secret" name="usr_token_secret" disabled="">
+</div>
+<div>
+  <button id="save" type="submit" class="btn btn-primary btn-lg" onclick = "run_project()" disabled="">Save Details</button>
+</div>
+</form>
+
+<h2>Enable Twitter?</h2>
+<label class="radio-inline"><input type="radio" onclick = "enabled_field()" name="twitter" id="twitter_yes">Yes</label>
+<label class="radio-inline"><input type="radio" onclick = "disabled_field()" checked="checked" name="twitter" id="twitter_no">No</label>
+
+<script>
+document.getElementById("usr_key").value = "{{usr_key}}";
+document.getElementById("usr_secret").value = "{{usr_secret}}";
+document.getElementById("usr_token").value = "{{usr_token}}";
+document.getElementById("usr_token_secret").value = "{{usr_token_secret}}";
+
+function run_project() {
+	form = document.getElementById("tweet");
+	form.submit();
+}
+
+function enabled_field() {
+	document.getElementById("usr_key").disabled = false;
+	document.getElementById("usr_secret").disabled = false;
+	document.getElementById("usr_token").disabled = false;
+	document.getElementById("usr_token_secret").disabled = false;
+	document.getElementById("save").disabled = false;
+	document.getElementById("twitter").value = "";
+	document.getElementById("tweeter").value = "";
+}
+
+function disabled_field() {
+	document.getElementById("usr_key").disabled = true;
+	document.getElementById("usr_secret").disabled = true;
+	document.getElementById("usr_token").disabled = true;
+	document.getElementById("usr_token_secret").disabled = true;
+	document.getElementById("save").disabled = true;
+	document.getElementById("twitter").value = "notweet";
+	document.getElementById("tweeter").value = "notweet";
+}
+
+</script>
+
+<h2>Hardware Setup</h2>
+<div class="well">
+  <ul class="features" style="list-style-position:inside">  
+    <li>Connect the LED moduel to D3</li>
+    <li>Connect the Button module to D4</li>
+    <li>Connect the Buzzer module to D5</li>
+    <li>Connect the RGB LCD to I2C0</li>
+  </ul>
+  <img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Example_Tweeting_Doorbell.png')}}" onclick="showImageModal(this)"/>
+  <br>
+  <form id="run_project_form" action="tweeting_doorbell.html" method="post">
+    <input name="twitter" id="twitter" type="hidden" value="notweet">
+    <center><button type="button" id="start" class="btn btn-primary btn-lg" onclick="onRunProject()">Run Project</button>
+	Timeout: <select id="timeout" name="timeout">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                    <option value="30">30</option>
+                    <option value="35">35</option>
+                    <option value="40">40</option>
+                    <option value="45">45</option>
+                    <option value="50">50</option>
+                    <option value="55">55</option>
+                    <option value="60">60</option>
+    </select>
+    </center>
+  </form>
+</div>
+
+<h2>Source Code</h2>
+<div class="well">
+  <form action="viewer.html" method="get">
+    <button name="filename" value="tweeting_doorbell/tweeting_doorbell.ino" type="submit" class="btn btn-primary">tweeting_doorbell.ino</button>
+  </form>
+  <br>
+  <form action="viewer.html" method="get">
+    <button name="filename" value="tweeting_doorbell/tweeting_doorbell.py" type="submit" class="btn btn-primary">tweeting_doorbell.py</button>
+  </form>
+</div>
+
+<script>
+  var default_state = "{{twitter}}";
+  if (default_state == "notweet") {
+    document.getElementById("twitter_no").checked = true;
+  } else {
+    document.getElementById("twitter_no").checked = false;
+    document.getElementById("twitter_yes").checked = true;
+    document.getElementById("tweeter").value = "";
+    document.getElementById("twitter").value = "";
+  }
+
+  document.getElementById("timeout").value = "{{timeout}}";
+  var timeleft = "{{remaining_time}}";
+  var runbutton = document.getElementById("start");
+  var timer_status = "{{timer_status}}";
+  if (timer_status == "timer_enabled") {
+    runbutton.disabled = true;
+    var timer = setInterval(function() {
+      timeleft--;
+      runbutton.textContent = "Project Running " + timeleft + " s";
+      if (timeleft <= 0) {
+        clearInterval(timer);
+	runbutton.disabled = false;
+	runbutton.textContent = "Run Project";
+	timer_status = "timer_disabled";
+      }
+    }, 1000);
+  }
+  function onRunProject(){
+    var form = document.getElementById("run_project_form");
+    form.submit();
+  }
+</script>
+
+{% endblock %}

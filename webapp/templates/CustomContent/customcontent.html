@@ -1,0 +1,202 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Custom Content{% endblock %}</b></h1>
+</div>
+
+<div class="alert alert-success alert-dismissable" style="display: {{ file_good }}">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>Successfully uploaded file</strong>
+</div>
+    
+<div class="alert alert-danger alert-dismissable" style="display: {{file_bad }}">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>Failed to upload file</strong>
+</div>
+
+<div class="well">
+  <p>On this page you can select a variety of different custom projects or documents created or imported by you. For more information visit the <a href="custom_content_tutorial.html">Custom Content Tutorial</a> page.</p>
+</div>
+
+<form action="customcontent.html" method="post" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="inputfile">Upload File</label>
+    <input type="file" name="file" class="form-control-file" id="inputfile" aria-describedby="fileHelp">
+  </div>
+  <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+<br>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Uploaded Files</th>
+    </tr>
+  </thead>
+  <tbody id="table-id1">
+    <script>
+      var file_list = ['{{ ', '.join(docs) }}'];
+      file_list = file_list[0].split(", ");
+      var table = document.getElementById("table-id1");
+      if (file_list[0] != "") {
+      for (var i = 0; i < file_list.length; i++) {
+        var row = table.insertRow(0);
+        var cell0 = row.insertCell(0);
+        var cell1 = row.insertCell(1);
+        var cell2 = row.insertCell(2);
+        var form1 = document.createElement("form");
+        form1.setAttribute("action", "uploaded_editor.html");
+        form1.setAttribute("method", "get");
+        var button1 = document.createElement("button");
+        button1.setAttribute("type", "submit");
+        button1.setAttribute("name", "filename");
+        button1.setAttribute("value", file_list[i]);
+        button1.innerHTML = "Edit";
+        var form2 = document.createElement("form");
+        form2.setAttribute("action", "customcontent.html");
+        form2.setAttribute("method", "get"); 
+        var button2 = document.createElement("button");
+        button2.setAttribute("type", "submit");
+        button2.setAttribute("name", "delete_uploaded");
+        button2.setAttribute("value", file_list[i]);
+        button2.innerHTML = "Delete"; 
+        form1.appendChild(button1);
+        form2.appendChild(button2);
+        cell0.innerHTML = file_list[i];
+        cell1.appendChild(form1);
+        cell2.appendChild(form2);
+      }
+      }
+    </script>
+  </tbody>
+</table>
+
+<div>
+  <label for="webappedit">Edit the Webapp</label>
+</div>
+
+<form action="reload_webapp.html" method="get">
+  <button type="submit" class="btn btn-primary" value="button">Edit Webapp</button>
+</form>
+<br>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Custom Webapp Pages</th>
+    </tr>
+  </thead>
+  <tbody id="table-id2">
+    <script>
+      var file_list = ['{{ ', '.join(webapp_include) }}'];
+      file_list = file_list[0].split(", ");
+      var table = document.getElementById("table-id2");
+      if (file_list[0] != "") {
+      for (var i = 0; i < file_list.length; i++) {
+        var row = table.insertRow(0);
+        var cell0 = row.insertCell(0);
+        var cell1 = row.insertCell(1);
+        var form1 = document.createElement("form");
+        form1.setAttribute("action", file_list[i]+".html");
+        form1.setAttribute("method", "get");
+        var button1 = document.createElement("button");
+        button1.setAttribute("type", "submit");
+        button1.innerHTML = "View";
+        form1.appendChild(button1);
+        cell0.innerHTML = file_list[i];
+        cell1.appendChild(form1);
+      }
+      }
+    </script>
+  </tbody>
+</table>
+
+<div>
+  <label for="projectcreate">Create a New Project</label>
+</div>
+
+<form action="editor.html" method="get">
+  <button type="submit" class="btn btn-primary" value="button">Create Project</button>
+</form>
+<br>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Custom Projects</th>
+    </tr>
+  </thead>
+  <tbody id="table-id-proj">
+    <script>
+      var file_list = ['{{ ', '.join(proj) }}'];
+      file_list = file_list[0].split(", ");
+      var table = document.getElementById("table-id-proj");
+      if (file_list[0] != "") {      
+      for (var i = 0; i < file_list.length; i++) {
+        var row = table.insertRow(0);
+        var cell0 = row.insertCell(0);
+        var cell1 = row.insertCell(1);
+        var cell2 = row.insertCell(2);
+        var form1 = document.createElement("form");
+        var form2 = document.createElement("form");
+        var button1 = document.createElement("button");
+        var button2 = document.createElement("button");
+        form1.setAttribute("action", "editor.html");
+        form1.setAttribute("method", "get");
+        form2.setAttribute("action", "customcontent.html");
+        form2.setAttribute("method", "get"); 
+        button1.setAttribute("type", "submit");
+        button1.setAttribute("name", "filename");
+        button1.setAttribute("value", file_list[i]);
+        button1.innerHTML = "Edit";
+        button2.setAttribute("type", "submit");
+        button2.setAttribute("value", file_list[i]);
+        button2.innerHTML = "Delete"; 
+        button2.setAttribute("name", "delete_proj");
+        form1.appendChild(button1);
+        form2.appendChild(button2);
+        cell0.innerHTML = file_list[i];
+        cell1.appendChild(form1);
+        cell2.appendChild(form2);
+      }
+      }
+    </script>
+  </tbody>
+</table>
+    
+{% endblock %}

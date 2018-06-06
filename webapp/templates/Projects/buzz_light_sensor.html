@@ -1,0 +1,70 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Buzzer and Light Sensor{% endblock %}</b></h1>
+</div>
+
+<h2>Description</h2>
+<div class="well">
+  <p>This example shows how to use the Grove light sensor and Grove buzzer. While the sensor detects light, the buzzer will remain silent. When dark, it will emit noise. For more information on the Grove Sensor Kit please visit <a href="grove_starter_kit.html">Grover Starter Kit</a>.</p>
+</div>
+
+<h2>Hardware Setup</h2>
+<div class="well">
+  <ul class="features" style="list-style-position:inside">  
+    <li>Attach the light sensor to A0</li>
+    <li>Attach the buzzer to D4</li>
+  </ul>
+  <img class="img-responsive center-block" id="test" src="{{url_for('static', filename='images/96boards_images/Example_Buzzer_Light.png')}}" onclick="showImageModal(this)"/>
+  <br>
+  <form action="buzz_light_sensor.html" method="post" onsubmit="return submitFormAsync(this)">
+    <center><button type="submit" class="btn btn-primary btn-lg">Run Project</button></center>
+  </form>
+</div>
+
+<h2>Source Code</h2>
+<div class="well">
+  <form action="viewer.html" method="get">
+    <button type="submit" name="filename" value="light_buzz/light_buzz.ino" class="btn btn-primary">light_buzz.ino</button>
+  </form>
+</div>
+
+{% endblock %}

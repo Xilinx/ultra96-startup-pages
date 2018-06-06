@@ -1,0 +1,232 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}WiFi Setup{% endblock %}</b></h1>
+</div>
+ 
+	<div class="alert alert-success alert-dismissable" style="display: {{ success }}">
+  	  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>Successfully added network. It may take a few seconds to actually connect.</strong>
+	</div>
+	<div class="alert alert-danger alert-dismissable" style="display: {{ failure }}">
+  	  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>ERROR: Could not connect to network.</strong>
+	</div>
+	<div class="alert alert-success alert-dismissable" style="display: {{ con_pass }}">
+  	  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	  <strong>Connected to {{ ssid }}.</strong>
+	</div>
+	<div class="alert alert-danger alert-dismissable" style="display: {{ con_fail }}">
+	  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	  <strong>Not connected yet.</strong>
+	</div>
+	<div class="alert alert-danger alert-dismissable" style="display: none" id="pass_short">
+	  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>ERROR: Passwords must be 8 to 63 characters long. Try again.</strong>
+	</div>
+	<div class="alert alert-danger alert-dismissable" style="display: none" id="ssid_missing">
+	  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>ERROR: SSID cannot be empty. Try again.</strong>
+	</div>
+
+    <form id="wifi_setup_form" action='wifi_setup.html' onsubmit='return passwordLength()' method="post">
+    
+    <div class="well">
+      <p>Be able to connect to a Wi-Fi network. You first need to press "Refresh Connections" to see a list of networks to connect to.</p>
+    </div>
+
+    <script>
+	function enabled_dropdown() {
+		setPasswordField(false);
+		document.getElementById("ssid").style.display = 'none';
+		document.getElementById("ssid_dd").style.display = 'block';
+	}
+	function enabled_textfield() {
+		setPasswordField(true);
+		document.getElementById("ssid").style.display = 'block';
+		document.getElementById("ssid_dd").style.display = 'none';
+	}
+	function updateValue() {
+		var ssid_value = document.getElementById("ssid_dd").value;
+		if (ssid_value != "No Network")
+			document.getElementById("ssid").value = ssid_value;
+	}
+    </script>
+    <h2> Select method for Wifi </h2>
+    <label class="radio-inline"><input type = "radio" onclick="enabled_dropdown()" checked="checked" name="test">Dropdown</label>
+    <label class="radio-inline"><input type = "radio" onclick="enabled_textfield()" name="test">Text Field</label>
+
+        <div class="form-group">
+	<label for="ssid">Network Name:</label>
+	<input id="ssid" style="display:none" class="form-control" name="ssid">
+        <select id="ssid_dd" name="ssid_dd" class="form-control" onchange="updateValue()">
+            <option>No Network</option>
+            <optgroup label="Open Networks" id="open_opt">
+            <script>
+                var open_list_tmp = ['{{ ', '.join(open_ssid) }}'];
+                // To avoid duplicate entry
+                open_list_tmp = open_list_tmp[0].split(", ");
+                var open_list = open_list_tmp.filter(function(elem, index, self) {
+                                    return index == self.indexOf(elem);
+                                })        
+                if (open_list[0] != "") {
+                    for (var i = 0; i < open_list.length; i++) {
+                        var sel = document.getElementById("open_opt");
+                        var opt = document.createElement("option");
+                        opt.setAttribute("value", open_list[i]);
+                        opt.appendChild(document.createTextNode(open_list[i]));
+                        sel.appendChild(opt);
+                    }
+                } else {
+                    var sel = document.getElementById("open_opt");
+                    var opt = document.createElement("option");
+                    opt.setAttribute("value", "N/A");
+                    opt.appendChild(document.createTextNode("N/A"));
+                    opt.disabled = true;
+                    sel.appendChild(opt);
+                }
+            </script>
+            </optgroup>
+            <optgroup label="Encrypted Networks" id="encrypted_opt">
+            <script>
+                var pass_list_tmp = ['{{ ', '.join(password_ssid) }}'];
+                // To avoid duplicate entry
+                pass_list_tmp = pass_list_tmp[0].split(", ");
+                var pass_list = pass_list_tmp.filter(function(elem, index, self) {
+                                    return index == self.indexOf(elem);
+                                })
+                if (pass_list[0] != "") {
+                    for (var i = 0; i < pass_list.length; i++) {
+                        var sel = document.getElementById("encrypted_opt");
+                        var opt = document.createElement("option"); 
+                        opt.setAttribute("value", pass_list[i]);
+                        opt.appendChild(document.createTextNode(pass_list[i]));
+                        sel.appendChild(opt);
+                    }
+                } else {
+                    var sel = document.getElementById("encrypted_opt");
+                    var opt = document.createElement("option");
+                    opt.setAttribute("value", "N/A"); 
+                    opt.appendChild(document.createTextNode("N/A"));
+                    opt.disabled = true;
+                    sel.appendChild(opt);
+                }
+            </script>
+            </optgroup>
+            </select>       
+      </div>
+      <div class="form-group">
+        <label for="passphrase">Network Passphrase:</label>
+        <input name="password" type="password" class="form-control" id="passphrase">
+      </div>
+      <div>
+        <button id="connectBtn" type="submit" class="btn btn-default">Connect</button>
+      </div>
+    </form>
+    <form action="wifi_setup.html" method="post">
+      <button id="disconnectBtn" type="submit" class="btn btn-default" name="disconnect">Disconnect</button>
+    </form>
+    <br>
+    <form action="wifi_setup.html" method="post">
+      <button type="submit" class="btn btn-default" name="connection">Check Connection</button>
+    </form>
+    <br>
+    <div class="alert alert-warning">
+      <strong>WARNING:</strong>Refreshing connections will cause loss of any existing Wi-Fi connections.
+    </div>
+    <form action="wifi_setup.html" method="post">
+      <button type="submit" class="btn btn-default" name="refresh">Refresh Connections</button>
+    </form>
+    <script>
+      function passwordLength(){
+        if(document.getElementById("ssid").value == "No Network")
+          return false;
+        var pass_length = document.getElementById("passphrase").value.length;
+        var ssid_length = document.getElementById("ssid").value.length;
+        document.getElementById("pass_short").style.display="hidden";
+        document.getElementById("ssid_missing").style.display="hidden";
+        if (isEncryptedNetwork && ((pass_length < 8) || (pass_length > 63))){
+              document.getElementById("pass_short").style.display="block";
+          return false;
+        } else {
+          if (ssid_length > 0) {
+            return true;
+          } else {
+            document.getElementById("ssid_missing").style.display="block";
+        return false;
+          }
+        }
+      }
+
+      if({{ connected }}){
+        document.getElementById("connectBtn").style.display="none";
+        document.getElementById("disconnectBtn").style.display="block";
+      }else{
+        document.getElementById("disconnectBtn").style.display="none";
+        document.getElementById("connectBtn").style.display="block";
+      }
+      
+      $('#ssid_dd').on('change', function() {
+	setPasswordField(false)
+      });
+
+      var isEncryptedNetwork = true;  
+      setPasswordField();
+      function setPasswordField(forceEnable){
+	if(forceEnable) {
+            $('#passphrase').prop('disabled', false);
+	} else {
+          var selectedOptgroup = $('#ssid_dd').find("option:selected").parent().attr('label');
+          $('#passphrase').val('');
+          if(selectedOptgroup == "Encrypted Networks") {
+              $('#passphrase').prop('disabled', false);
+              isEncryptedNetwork = true;
+          } else {
+              $('#passphrase').prop('disabled', true);
+              isEncryptedNetwork = false;
+          }
+	}
+      }
+
+    </script>
+
+
+        {% endblock %}

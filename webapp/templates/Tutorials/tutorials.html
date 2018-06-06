@@ -1,0 +1,81 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Tutorials{% endblock %}</b></h1>
+</div>
+          
+<h2>Instruction</h2>
+<div class="well">
+  <p>This page contains a list of Tutorials that can help detail how some things are currently done and how to implement custom features. Below is a table of tutorials/guides and their descriptions</p>
+</div>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Tutorial/Guide</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="grove_starter_kit.html">Grove Starter Kit</a></td>
+      <td>Learn all about the accessories that came with the Grove Starter Kit for 96Boards and how to connect it to the Ultra96.</td>
+    </tr>
+    <tr>
+      <td><a href="custom_content_tutorial.html">Custom Content</a></td>
+      <td>Learn how to create custom projects and webpages or upload your own local documents.</td>
+    </tr>
+    <tr>
+      <td><a href="run_project_tutorial.html">Run Example Project</a></td>
+      <td>Learn how to run example project and edit project code.</td>
+    </tr>
+    <tr>
+      <td><a href="dnf.html">dnf</a></td>
+      <td>Learn how to use the dnf Package Manager through an example</td>
+    </tr>
+    <tr>
+      <td><a href="using_ultra96.html">Using Ultra96</a></td>
+      <td>Learn about the different ways that you can do actions and/or access the board.</td>
+    </tr>
+  </tbody>
+</table>
+ 
+{% endblock %}

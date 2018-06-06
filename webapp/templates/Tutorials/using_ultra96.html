@@ -1,0 +1,79 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+	<div class="page-header">
+	  <h1 class="page-header"><b>{% block title %}Using Ultra96{% endblock %}</b></h1>
+        </div>
+    
+	<h2>Ultra96 Usages</h2>
+	<div class="well">
+          <p>Below is a list of ways that you can access the Ultra96 Board. These are explained in depth in their own sections below.<p>
+	  <ul><br>
+	    <li>Webapp</li><br>
+	    <li>miniDP</li><br>
+	    <li>UART</li><br>
+	    <li>SSH</li><br>
+	  </ul>
+	</div>
+
+        <h2>Webapp</h2>
+        <div class="well">
+	  <p>This is the simplest of all of the methods. When the board boots for the first time or any other time (into PetaLinux) the webapp will be available by default. Using any device that is able to use Wi-Fi (laptop, tablet, cellphone, etc.) can connect to the webapp by connecting to the board. When the board boots it shows its MAC address (on the first line of the LCD) that is appended to the string <strong>Ultra96_</strong> which is what the SSID (network) that can be connected to. On the second line of the LCD is the URL that the user connects to in order to see the webapp. If you happen to forget it is <strong>192.168.2.1</strong> and that will bring you to the home page of the webapp.</p>
+          <p>The webapp has many uses from running examples to creating your own webpages/projects. Feel free to play around and explore all that the webapp has to offer.</p>
+        </div>
+
+        <h2>miniDP</h2>
+        <div class="well">
+	  <p>It is also possible to see the PetaLinux desktop when you boot the board. This is done by connecting the miniDP to DP cable that is provided in the Ultra96 kit. Alternatively you can use a miniDP to X adapter where X is some other standard to connect to the monitor, such as HDMI. Once this is done you just simply boot up the board and after a small boot sequence you will see the desktop. From here you can open up the terminal and/or run any other applications as you would in any other PetaLinux environment.</p>
+        </div>
+
+        <h2>UART</h2>
+        <div class="well">
+	  <p>If you are fine with using just the terminal and have a miniUSB to USB cable then using this option will work. Connect the miniUSB into the slot on the mezzanine card (the card on top of the Ultra96) and connect the USB into a laptop (or other computer). It is recommended to use either PuTTY or TeraTerm in order to communicate to the board. Both TeraTerm and PuTTY can be downloaded online for free. The explanation provided will assume PuTTY has been chosen (TeraTerm works close enough that it shouldn't be too much hassle to use that instead) and that it is being used on a Windows OS.</p>
+	  <p>Once downloaded and everything is connected (and the board is on) open up <strong>Device Manager</strong> in Windows by typing it into the search bar after pressing the Windows Icon. Scroll down to <strong>Ports (COM & LPT)</strong> and find the <strong>USB Serial Port (COMX)</strong> where X is a number. If you have many of them just unplug the USB cable from your device and see what went away and plug it back in. Remember the number X. To find the COM Port in other OS is simple enough and can be found out by searching for the way how online.</p>
+	  <p>Open up PuTTY and select <strong>Serial</strong> as the <strong>Connection Type:</strong>. In the space under <strong>Serial line</strong> enter the COM port that you saw before (e.g. <strong>COM5</strong>). Make sure the <strong>Speed</strong> is set to <strong>115200</strong>. Once all of this is ready just press the <strong>Open</strong> button at the bottom of the application and you will get a terminal open. Congratulations, you now have access to the Ultra96 terminal.</p>
+        </div>
+
+        <h2>SSH</h2>
+        <div class="well">
+	  <p>In order to SSH into the board it is once again recommended to use PuTTY or TeraTerm. We will assume for this tutorial that PuTTY is used on a Windows OS. Both programs can be downloaded for free online.</p>
+	  <p>Connect to the Ultra96 board via its SSID which can be seen on the first line of the LCD Screen when the board boots (in PetaLinux only). The LCD shows the boards MAC address (on the first line of the LCD) that is appended to the string <strong>Ultra96_</strong> which is the SSID (network) that can be connected to. Connect to this network. Next open up PuTTY and under <strong>Connection type:</strong> select <strong>SSH</strong>. Under <strong>Host Name (or IP address)</strong> we will enter the second line of the LCD which is by default <strong>192.168.2.1</strong> with the <strong>Port</strong> set to <strong>22</strong>. Click the <strong>Open</strong> button on the bottom of the page and the terminal of the Ultra96 should open appropriately.</p>
+        </div>
+
+{% endblock %}

@@ -1,0 +1,168 @@
+<!--
+-
+- Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+-
+- Permission is hereby granted, free of charge, to any person obtaining a copy
+- of this software and associated documentation files (the "Software"), to deal
+- in the Software without restriction, including without limitation the rights
+- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+- copies of the Software, and to permit persons to whom the Software is
+- furnished to do so, subject to the following conditions:
+-
+- The above copyright notice and this permission notice shall be included in
+- all copies or substantial portions of the Software.
+-
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
+- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+- XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+- OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+- SOFTWARE.
+-
+- Except as contained in this notice, the name of the Xilinx shall not be used
+- in advertising or otherwise to promote the sale, use or other dealings in
+- this Software without prior written authorization from Xilinx.
+-
+-
+-
+- Author: Michael Chyziak <chyziak@xilinx.com>
+-
+-->
+
+
+{% extends "Default/default.html" %}
+{% block content %}
+
+<div class="page-header">
+  <h1 class="display-4"><b>{% block title %}Webapp Reload{% endblock %}</b></h1>
+</div>
+
+<div class="alert alert-success alert-dismissable" style="display: {{webapp_reload}}">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>The Webapp has been reloaded and will reboot!</strong>
+</div>
+
+<div class="alert alert-warning alert-dismissable">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>WARNING: Reloading webapp with additions may cause it to break. Do so at your own peril.</strong>
+</div>
+
+<form action="custom_front_end.html" method="get">
+  <button type="submit" class="btn btn-primary">Create Front End</button>
+</form>
+<br>
+<form action="custom_back_end.html" method="get">
+  <button type="submit" class="btn btn-primary">Create Back End</button>
+</form>
+<br>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Front End</th>
+      <th>Back End</th>
+      <th>Include</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody id="table-id">
+    <script>
+      var filelist = ['{{ ', '.join(filelist) }}'];
+      filelist = filelist[0].split(", ");
+      var table = document.getElementById("table-id");
+      if (filelist[0] == "") {
+      	//do nothing  
+      } else {
+      for (var i = 0; i < filelist.length; i=i+2) {
+        var row = table.insertRow(0);
+	var cell0 = row.insertCell(0);
+        var cell1 = row.insertCell(1);
+	var cell2 = row.insertCell(2);
+	var cell3 = row.insertCell(3);
+	var form0 = document.createElement("form");
+        var form1 = document.createElement("form");
+        var input2 = document.createElement("input");
+	var form3 = document.createElement("form");
+
+	if (filelist[i] != "N/A") {
+          form0.setAttribute("action", "custom_front_end.html");
+	  form0.setAttribute("method", "get");
+	  var button0 = document.createElement("button");
+	  button0.setAttribute("type", "submit");
+	  button0.setAttribute("name", "filename");
+	  button0.setAttribute("value", filelist[i]);
+	  button0.innerHTML = filelist[i];
+	  form0.appendChild(button0);
+	  cell0.appendChild(form0);
+        }
+	if (filelist[i+1] != "N/A") {
+          form1.setAttribute("action", "custom_back_end.html");
+	  form1.setAttribute("method", "get");
+	  var button1 = document.createElement("button");
+	  button1.setAttribute("type", "submit");
+	  button1.setAttribute("name", "filename");
+	  button1.setAttribute("value", filelist[i+1]);
+	  button1.innerHTML = filelist[i+1];
+	  form1.appendChild(button1);
+	  cell1.appendChild(form1);
+        }
+
+        form3.setAttribute("action", "reload_webapp.html");
+	form3.setAttribute("method", "get");
+	var button3 = document.createElement("button");
+	button3.setAttribute("type", "submit");
+	button3.setAttribute("name", "delete");
+	var filename = "";
+	if (filelist[i] != "N/A") {
+          filename = filelist[i].slice(0, -5); //remove last 5 characters (.html)
+	} else {  
+	  filename = filelist[i+1].slice(0, -3); //remove last 3 characters (.py)
+	}
+	button3.setAttribute("value", filename);
+	button3.innerHTML = "Delete";
+	form3.appendChild(button3);
+	cell3.appendChild(form3);
+
+	input2.setAttribute("type", "checkbox");
+	input2.setAttribute("name", "include");
+	input2.setAttribute("value", filename);
+	cell2.appendChild(input2);
+      }
+      }
+    </script>
+  </tbody>
+</table>
+
+<div class="alert alert-danger alert-dismissable">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>DANGER: Reloading the webapp will cause the board to reboot.</strong>
+</div>
+
+<form action="reload_webapp.html" method="post">
+  <button type="submit" class="btn btn-primary" id="reload_button" name="reload_button" onclick="getCheckboxes()">Reload Webapp</button>
+</form>
+
+<script>
+  function getCheckboxes() {
+    var checkboxes = document.getElementsByName("include");
+    var values = "";
+
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+	if (i == 0) {
+          values += checkboxes[i].value;
+	} else {
+          values += " "+checkboxes[i].value;
+        }
+      }
+    }
+    var button = document.getElementById("reload_button");
+    button.setAttribute("value", values);
+  }
+</script>
+{% endblock %}
