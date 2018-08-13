@@ -59,7 +59,6 @@ timeout = 15
 elapsed_time = 5
 pconn, cconn = Pipe()
 
-
 @app.route('/')
 @app.route('/home.html', methods=['GET', 'POST'])
 def home():
@@ -268,15 +267,24 @@ def hello_world():
     global timeout
     global timer_status
     global elapsed_time
+    global runme_proc 
+
     if request.method == 'POST':
         if request.form['timeout']:
           timeout = request.form['timeout']
+         
+        if request.form['submit'] == 'stop':
+           os.killpg(os.getpgid(runme_proc.pid),signal.SIGTERM)
+           timer_status="timer_disabled"
+           return render_template("Projects/hello_world.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
+      
         timer_status = "timer_enabled"
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/rgb_lcd_demo/")
-        p = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
-        multiprocessing.Process(target=thread_run, args=(p, timeout, cconn)).start()
+        runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
+        multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
         os.chdir(CUR_DIRECTORY)
         return render_template("Projects/hello_world.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
+    
     while(pconn.poll()):
         val = pconn.recv()
         elapsed_time = val
@@ -290,15 +298,24 @@ def touch_sensor():
     global timeout
     global timer_status
     global elapsed_time
+    global runme_proc 
+
     if request.method == 'POST':
         if request.form['timeout']:
           timeout = request.form['timeout']
+
+        if request.form['submit'] == 'stop':
+           os.killpg(os.getpgid(runme_proc.pid),signal.SIGTERM)
+           timer_status="timer_disabled"
+           return render_template("Projects/touch_sensor.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
+
         timer_status = "timer_enabled"
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/touch_switch/")
-        p = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
-        multiprocessing.Process(target=thread_run, args=(p, timeout, cconn)).start()
+        runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
+        multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
         os.chdir(CUR_DIRECTORY)
         return render_template("Projects/touch_sensor.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
+
     while(pconn.poll()):
         val = pconn.recv()
         elapsed_time = val
@@ -311,7 +328,7 @@ def touch_sensor():
 def led_button():
     if request.method == 'POST':
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/button_led/")
-        p = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         os.chdir(CUR_DIRECTORY)
     return render_template("Projects/led_button.html")
 
@@ -319,7 +336,7 @@ def led_button():
 def buzz_light_sensor():
     if request.method == 'POST':
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/light_buzz/")
-        p = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         os.chdir(CUR_DIRECTORY)
     return render_template("Projects/buzz_light_sensor.html")
 
@@ -328,7 +345,14 @@ def tweeting_doorbell():
     global timeout
     global timer_status
     global elapsed_time
+    global runme_proc
+    
     if request.method == 'POST':
+        if request.form['submit'] == 'stop':
+           os.killpg(os.getpgid(runme_proc.pid),signal.SIGTERM)
+           timer_status="timer_disabled"
+           return render_template("Projects/tweeting_doorbell.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
+
         if "usr_key" in request.form:
             usr_key = request.form["usr_key"]
             usr_secret = request.form["usr_secret"]
@@ -345,9 +369,10 @@ def tweeting_doorbell():
         timeout = request.form['timeout']
         timer_status = "timer_enabled"
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/tweeting_doorbell/")
+    
         if os.path.exists("/usr/share/Sensor_Mezzanine_Getting_Started/tweeting_doorbell/keys.py"):
-            p = subprocess.Popen("sh run_me.sh "+request.form["twitter"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
-            multiprocessing.Process(target=thread_run, args=(p, timeout, cconn)).start()
+            runme_proc = subprocess.Popen("sh run_me.sh "+request.form["twitter"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
+            multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
             os.chdir(CUR_DIRECTORY)
             return render_template("Projects/tweeting_doorbell.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status, twitter=request.form["twitter"], missing_keys="none")
         else:
@@ -365,15 +390,24 @@ def temp_display():
     global timeout
     global timer_status
     global elapsed_time
+    global runme_proc
+
     if request.method == 'POST':
         if request.form['timeout']:
           timeout = request.form['timeout']
+
+        if request.form['submit'] == 'stop':
+           os.killpg(os.getpgid(runme_proc.pid),signal.SIGTERM)
+           timer_status="timer_disabled"
+           return render_template("Projects/temp_display.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
+
         timer_status = "timer_enabled"
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/humid_temp/")
-        p = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
-        multiprocessing.Process(target=thread_run, args=(p, timeout, cconn)).start()
+        runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
+        multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
         os.chdir(CUR_DIRECTORY)
         return render_template("Projects/temp_display.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
+    
     while(pconn.poll()):
         val = pconn.recv()
         elapsed_time = val
@@ -411,8 +445,8 @@ def viewer():
             f.close()
             os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/"+os.path.dirname(request.args.get('filename')))
             timer_status = "timer_enabled"
-            p = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
-            multiprocessing.Process(target=thread_run, args=(p, timeout, cconn)).start()
+            runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
+            multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
             os.chdir(CUR_DIRECTORY)
             output, err = p.communicate()
             return render_template("Projects/viewer.html", code=code, filename=os.path.basename(request.args.get('filename')), log=output+"\n"+err)
@@ -848,3 +882,9 @@ def check_connection():
         return "true"
     return "false"
 
+#CUSTOM USER BACK END CODE ADDED AFTER HERE
+
+#CUSTOM USER BACK END CODE STOPS HERE
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80, threaded=True)

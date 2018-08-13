@@ -129,7 +129,7 @@ function disabled_field() {
   <br>
   <form id="run_project_form" action="tweeting_doorbell.html" method="post">
     <input name="twitter" id="twitter" type="hidden" value="notweet">
-    <center><button type="button" id="start" class="btn btn-primary btn-lg" onclick="onRunProject()">Run Project</button>
+    <center><button type="submit" id="start" name="submit" value="start" class="btn btn-primary btn-lg" onclick="onRunProject()">Run Project</button>
 	Timeout: <select id="timeout" name="timeout">
                     <option value="5">5</option>
                     <option value="10">10</option>
@@ -145,6 +145,9 @@ function disabled_field() {
                     <option value="60">60</option>
     </select>
     </center>
+    <br>
+    <center><button type="submit" id="stop" name="submit" value="stop" class="btn btn-primary btn-lg" onclick="onRunProject()">Stop Project</button>
+    </center>	
   </form>
 </div>
 

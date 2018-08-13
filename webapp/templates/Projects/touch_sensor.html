@@ -56,8 +56,8 @@
   <img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Example_Touch_Relay.png')}}" onclick="showImageModal(this)"/>
   <br>
   <form id="run_project_form" action="touch_sensor.html" method="post">
-    <center><button type="button" id="start" class="btn btn-primary btn-lg" onclick="onRunProject()">Run Project</button>
-		Timeout: <select id="timeout" name="timeout">
+    <center><button type="submit" id="start" name="submit" value="start" class="btn btn-primary btn-lg" onclick="onRunProject()">Run Project</button>
+		Timeout: <select id="timeout" name="timeout"> 
 		    <option value="5">5</option>
 		    <option value="10">10</option>
 		    <option value="15">15</option>
@@ -72,6 +72,9 @@
 		    <option value="60">60</option>
     </select>
     </center>
+    <br>
+    <center><button type="submit" id="stop" name="submit" value="stop" class="btn btn-primary btn-lg" onclick="onRunProject()">Stop Project</button>
+    </center>	  
   </form>
 </div>
 
