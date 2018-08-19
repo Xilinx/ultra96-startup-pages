@@ -372,6 +372,10 @@ def tweeting_doorbell():
     
         if os.path.exists("/usr/share/Sensor_Mezzanine_Getting_Started/tweeting_doorbell/keys.py"):
             runme_proc = subprocess.Popen("sh run_me.sh "+request.form["twitter"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
+            output = ""
+            while "python tweeting_doorbell.py" not in output :
+                output = runme_proc.stdout.readline()
+            timer_status = "timer_enabled"
             multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
             os.chdir(CUR_DIRECTORY)
             return render_template("Projects/tweeting_doorbell.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status, twitter=request.form["twitter"], missing_keys="none")
@@ -401,9 +405,12 @@ def temp_display():
            timer_status="timer_disabled"
            return render_template("Projects/temp_display.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
 
-        timer_status = "timer_enabled"
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/humid_temp/")
         runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
+        output = ""
+        while "python humid_temp.py" not in output :
+             output = runme_proc.stdout.readline()
+        timer_status = "timer_enabled"
         multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
         os.chdir(CUR_DIRECTORY)
         return render_template("Projects/temp_display.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
