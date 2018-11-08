@@ -44,13 +44,13 @@
 
 <h2>Description</h2>
 <div class="well">
-  <p>Build a system that toggles a relay on and off when the touch sensor is tapped. The pins on the connectors G1 through G5 are connected to GPIO pins on the baseboard and can be directly controlled from Linux. In this project, the application reads the state of the touch sensor from GPIO-G on connector G3, and toggles the relay by driving GPIO-E on connector G2. Each time the sensors is tapped, the relay will toggle between on and off. For more information on the Grove Sensor Kit please visit <a href="grove_starter_kit.html">Grover Starter Kit</a>.</p>
+  <p>Build a system that toggles a relay on and off when the touch sensor is tapped. The pins on the connectors G1 through G5 are connected to GPIO pins on the baseboard and can be directly controlled from Linux. In this project, the application reads the state of the touch sensor from GPIO-AB on connector GAB, and toggles the relay by driving GPIO-E on connector G2. Each time the sensors is tapped, the relay will toggle between on and off. The GPIO pins E-L cannot be used by the sensor mezzanine examples that use sensors to provide input, like the touch sensor. These GPIO pins are being used by the bitstream to connect the MIPI camera sensor. For more information on the Grove Sensor Kit please visit <a href="grove_starter_kit.html">Grover Starter Kit</a>.</p>
 </div>
 
 <h2>Hardware Setup</h2>
 <div class="well">
   <ul class="features" style="list-style-position:inside">  
-    <li>Attach the relay to G2</li>
+    <li>Attach the relay to GAB</li>
     <li>Attach the touch sensor to G3</li>
   </ul>
   <img class="img-responsive center-block" src="{{url_for('static', filename='images/96boards_images/Example_Touch_Relay.png')}}" onclick="showImageModal(this)"/>
