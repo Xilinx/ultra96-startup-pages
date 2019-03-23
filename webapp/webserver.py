@@ -74,24 +74,24 @@ def home():
 def createWiFi(output):
     open_ssid = []
     password_ssid = []
-    password = "no"
-    ssid = ""
+    ssid =False
+    password = False
     for line in output.splitlines():
-        line = line.strip()
-        if "Encryption" in line:
-            if "off" not in line:
-                password = "yes"
-        else:
-            line = line.replace("ESSID:", "")
-            line = line.replace("\"", "")
-            if line:
-               ssid = line
-               if "yes" in password:
-                   password_ssid.append(line)
-               else:
-                   open_ssid.append(line) 
-            password = "no"
-            ssid = ""
+        line.strip()
+        if "SSID" in line:
+            ssid_list = line.split(": ")
+            if len(ssid_list) == 2:
+                ssid_name = ssid_list[1]
+            ssid = True
+        elif "RSN" in line:
+            password = True
+        elif "BSS" in line:
+            if ssid and password:
+                password_ssid.append(ssid_name)
+            if ssid and not password: 
+                open_ssid.append(ssid_name)
+            ssid =  False
+            password = False
     return (open_ssid, password_ssid)
 
 @app.route('/information.html')
@@ -156,23 +156,28 @@ def wifi_setup():
                 f.close()
             os.system("ifup wlan0")
             i = 0 
-            while i < 10:
+            while i < 3:
                 i = i+1
-                p = subprocess.Popen("iwlist wlan0 scanning | egrep \"ESSID|Encryption\"", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                p = subprocess.Popen("iw wlan0 scan", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
                 output, err = p.communicate()
-                if output: 
+                if "SSID" in output:
                     open_ssid, password_ssid = createWiFi(output)
-                    os.system("ifdown wlan0")
+                    os.system("ifconfig wlan0 down")
                     return render_template("Configurations/wifi_setup.html", open_ssid=open_ssid, password_ssid=password_ssid, connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")
         elif 'disconnect' in request.form:
-            p = subprocess.call("ifdown wlan0", stdout=subprocess.PIPE, shell=True)
+            p = subprocess.call("ifconfig wlan0 down", stdout=subprocess.PIPE, shell=True)
             is_connected = check_connection()
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")            
         else:
-            p = subprocess.Popen("iwgetid", stdout=subprocess.PIPE, shell=True)
+            p = subprocess.Popen("iw wlan0 info", stdout=subprocess.PIPE, shell=True)
             ssid_output = p.communicate()[0]
-            if ssid_output == "":
+            ssid = ""
+            for line in ssid_output.splitlines():
+                line.strip()
+                if "ssid" in line:
+                    ssid = line.split("ssid ")[1]
+            if ssid == "":
                 return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="block", ssid="")
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="block", con_fail="none", ssid=ssid_output)
     else:
@@ -883,9 +888,15 @@ def thread_run(proc, timeout, cconn):
     output,err = proc.communicate()
 
 def check_connection():
-    p = subprocess.Popen("iwgetid", stdout=subprocess.PIPE, shell=True)
+    p = subprocess.Popen("iw wlan0 info", stdout=subprocess.PIPE, shell=True)
     ssid_output = p.communicate()[0]
-    if ssid_output != "":
+    ssid = ""
+    for line in ssid_output.splitlines():
+        line.strip()
+        if "ssid" in line:
+            ssid = line.split("ssid ")[1]
+
+    if ssid != "":
         return "true"
     return "false"
 
