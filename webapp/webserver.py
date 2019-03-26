@@ -358,7 +358,7 @@ def tweeting_doorbell():
            timer_status="timer_disabled"
            return render_template("Projects/tweeting_doorbell.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
 
-        if "usr_key" in request.form:
+        if request.form['submit'] == 'key_val':
             usr_key = request.form["usr_key"]
             usr_secret = request.form["usr_secret"]
             usr_token = request.form["usr_token"]
