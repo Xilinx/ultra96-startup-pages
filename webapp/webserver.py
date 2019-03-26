@@ -64,12 +64,12 @@ pconn, cconn = Pipe()
 def home():
 
 	raw = subprocess.check_output(['ifconfig','-a'])
-	line = raw.find('wlan')
+	line = raw.find(b'wlan')
 	raw = raw[line:]
-	hwline = raw.find("HWaddr")
+	hwline = raw.find(b"HWaddr")
 	raw = raw[hwline+6:hwline+24]
-	raw = raw.replace(":","")
-	return render_template("Home/home.html", value=raw)
+	raw = raw.replace(b":",b"")
+	return render_template("Home/home.html", value=raw.decode('utf-8'))
 
 def createWiFi(output):
     open_ssid = []
@@ -141,10 +141,10 @@ def wifi_setup():
             f.write("\tssid=\""+ssid+"\"\n")
             f.write("\tscan_ssid=1\n")
             if passphrase != "":
-	    	f.write("\tkey_mgmt=WPA-PSK\n")
-            	f.write("\tpsk=\""+passphrase+"\"\n")
+                f.write("\tkey_mgmt=WPA-PSK\n")
+                f.write("\tpsk=\""+passphrase+"\"\n")
             else:
-	    	f.write("\tkey_mgmt=NONE\n")
+                f.write("\tkey_mgmt=NONE\n")
             f.write("}\n")
             f.close()
             os.system("ifup wlan0")
@@ -159,7 +159,8 @@ def wifi_setup():
             while i < 3:
                 i = i+1
                 p = subprocess.Popen("iw wlan0 scan", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-                output, err = p.communicate()
+                output_encoded, err = p.communicate()
+                output=output_encoded.decode('utf-8')
                 if "SSID" in output:
                     open_ssid, password_ssid = createWiFi(output)
                     os.system("ifconfig wlan0 down")
@@ -171,7 +172,8 @@ def wifi_setup():
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")            
         else:
             p = subprocess.Popen("iw wlan0 info", stdout=subprocess.PIPE, shell=True)
-            ssid_output = p.communicate()[0]
+            ssid_output_encoded = p.communicate()[0]
+            ssid_output = ssid_output_encoded.decode('utf-8')
             ssid = ""
             for line in ssid_output.splitlines():
                 line.strip()
@@ -221,7 +223,7 @@ def password():
 @app.route('/dnf_update.html', methods=['GET', 'POST'])
 def dnf_update():
     if request.method == 'POST':
-        p = subprocess.Popen("iwgetid", stdout=subprocess.PIPE, shell=True)
+        p = subprocess.Popen("iw wlan0 info | grep ssid", stdout=subprocess.PIPE, shell=True)
         ssid_output = p.communicate()[0]
         if ssid_output != "":
             os.system("dnf repoquery")
@@ -369,7 +371,6 @@ def tweeting_doorbell():
             f.write("access_token = \"" +usr_token + "\"\n")
             f.write("access_token_secret = \"" +usr_token_secret + "\"\n")
             f.close()
-            print request.form
             return render_template("Projects/tweeting_doorbell.html", usr_key=usr_key, usr_secret=usr_secret, usr_token=usr_token, usr_token_secret=usr_token_secret, timeout=timeout, remaining_time=timeout, timer_status=timer_status, twitter="", missing_keys="none")
         timeout = request.form['timeout']
         timer_status = "timer_enabled"
@@ -378,8 +379,8 @@ def tweeting_doorbell():
         if os.path.exists("/usr/share/Sensor_Mezzanine_Getting_Started/tweeting_doorbell/keys.py"):
             runme_proc = subprocess.Popen("sh run_me.sh "+request.form["twitter"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
             output = ""
-            while "python tweeting_doorbell.py" not in output :
-                output = runme_proc.stdout.readline()
+            while "flash:w:build-uno/tweeting_doorbell.hex" not in output :
+                output = runme_proc.stdout.readline().decode('utf-8')
             timer_status = "timer_enabled"
             multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
             os.chdir(CUR_DIRECTORY)
@@ -413,8 +414,8 @@ def temp_display():
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/humid_temp/")
         runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
         output = ""
-        while "python humid_temp.py" not in output :
-             output = runme_proc.stdout.readline()
+        while "flash:w:build-uno/humid_temp.hex" not in output:
+             output = runme_proc.stdout.readline().decode('utf-8')
         timer_status = "timer_enabled"
         multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
         os.chdir(CUR_DIRECTORY)
@@ -460,8 +461,8 @@ def viewer():
             runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
             multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
             os.chdir(CUR_DIRECTORY)
-            output, err = p.communicate()
-            return render_template("Projects/viewer.html", code=code, filename=os.path.basename(request.args.get('filename')), log=output+"\n"+err)
+            output, err = runme_proc.communicate()
+            return render_template("Projects/viewer.html", code=code, filename=os.path.basename(request.args.get('filename')), log=output.decode('utf-8')+"\n"+err.decode('utf-8'))
     else:
         code = "ERROR: Could not find file"
         if os.path.exists("/usr/share/Sensor_Mezzanine_Getting_Started/"+request.args.get('filename')):
@@ -732,7 +733,7 @@ def uploaded_editor():
     else:
         code = "Could not read file"
         if os.path.exists(CUR_DIRECTORY+"/templates/CustomContent/uploaded_files/"+request.args.get('filename')):
-            with open(CUR_DIRECTORY+"/templates/CustomContent/uploaded_files/"+request.args.get('filename'), "r") as f:
+            with open(CUR_DIRECTORY+"/templates/CustomContent/uploaded_files/"+request.args.get('filename'), "r",encoding="utf-8") as f:
                 code = f.read()
             f.close()
         return render_template("CustomContent/uploaded_editor.html", filesaved="none", filemissing="none", filename=request.args.get('filename'), code=code)
@@ -889,7 +890,8 @@ def thread_run(proc, timeout, cconn):
 
 def check_connection():
     p = subprocess.Popen("iw wlan0 info", stdout=subprocess.PIPE, shell=True)
-    ssid_output = p.communicate()[0]
+    ssid_output_encoded = p.communicate()[0]
+    ssid_output = ssid_output_encoded.decode('utf-8')
     ssid = ""
     for line in ssid_output.splitlines():
         line.strip()
