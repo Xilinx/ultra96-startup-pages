@@ -12,6 +12,10 @@
 - The above copyright notice and this permission notice shall be included in
 - all copies or substantial portions of the Software.
 -
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
 - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 - IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 - FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,7 +39,7 @@
 {% block content %}
 
 <div class="page-header">
-  <h1 class="display-4"><b>{% block title %}Ultra96 Home{% endblock %}</b></h1>
+  <h1 class="display-4"><b>{% block title %}Ultra96-V2 Home{% endblock %}</b></h1>
   <h3> IP Address: 192.168.2.1  MAC Address: {{ value }}</h3>
 </div>
 
@@ -49,8 +53,8 @@
   </thead>
   <tbody>
       <tr>
-      <td><a href="Ultra96_LEDs.html">Ultra96 GPIO LEDs</a></td>
-       <td>Be able to control the four GPIO LEDs on the Ultra96 Board. Can have them in a constant state or as a trigger.</td>
+      <td><a href="Ultra96_LEDs.html">Ultra96-V2 GPIO LEDs</a></td>
+       <td>Be able to control the four GPIO LEDs on the Ultra96-V2 Board. Can have them in a constant state or as a trigger.</td>
       </tr>
   </tbody>
 </table>
@@ -82,10 +86,12 @@
     </tr>
   </thead>
   <tbody>
+<!--
     <tr>
       <td><a href="grove_starter_kit.html">Grove Starter Kit</a></td>
       <td>Description of the different parts of the grove starter kit.</td>
     </tr>
+-->
     <tr>
       <td><a href="dnf.html">dnf</a></td>
       <td>Shows you how to create packages using the dnf package manager.</td>
@@ -119,6 +125,7 @@
 </table>
 <br>
 
+<!--
 <center><h2>Configuration with Grove starter kit</h2></center>
 <table class="table table-hover">
   <thead>
@@ -155,5 +162,6 @@
   </tbody>
 </table>
 <br>
+-->
 
 {% endblock %}

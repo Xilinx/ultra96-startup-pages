@@ -12,6 +12,10 @@
 - The above copyright notice and this permission notice shall be included in
 - all copies or substantial portions of the Software.
 -
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
 - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 - IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 - FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -50,7 +54,7 @@
 
 <h2>Extra Setup</h2>
 <div class="well"> 
-  <p>If you wish to communicate with Twitter some extra setup is required, otherwise this section can be skipped. You will need to have a twitter account and obtain oauth details from <a href="https://apps.twitter.com">https://apps.twitter.com</a> by creating an app. Enter the oauth details below and hit the "Save Details" button. Lastly you will need to be connected to the internet on the Ultra96 Board. One way to do this is by going connecting to a <a href="/wifi_setup.html">WiFi Device</a>.</p>
+  <p>If you wish to communicate with Twitter some extra setup is required, otherwise this section can be skipped. You will need to have a twitter account and obtain oauth details from <a href="https://apps.twitter.com">https://apps.twitter.com</a> by creating an app. Enter the oauth details below and hit the "Save Details" button. Lastly you will need to be connected to the internet on the Ultra96-V2 Board. One way to do this is by going connecting to a <a href="/wifi_setup.html">WiFi Device</a>.</p>
 </div>
 
 <form id="tweet" action="tweeting_doorbell.html" method="post">
@@ -72,7 +76,7 @@
   <input type="text" class="form-control" id="usr_token_secret" name="usr_token_secret" disabled="">
 </div>
 <div>
-  <button id="save" type="submit" name="submit" value="key_val" class="btn btn-primary btn-lg" onclick = "run_project()" disabled="">Save Details</button>
+  <button id="save" type="submit" class="btn btn-primary btn-lg" onclick = "run_project()" disabled="">Save Details</button>
 </div>
 </form>
 

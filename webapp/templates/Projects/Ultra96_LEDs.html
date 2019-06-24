@@ -12,6 +12,10 @@
 - The above copyright notice and this permission notice shall be included in
 - all copies or substantial portions of the Software.
 -
+- Use of the Software is limited solely to applications:
+- (a) running on a Xilinx device, or
+- (b) that interact with a Xilinx device through a bus or interconnect.
+-
 - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 - IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 - FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,17 +39,17 @@
 {% block content %}
 
 	<div class="page-header">
-	  <h1 class="display-4"><b>{% block title %}Ultra96 GPIO LEDs{% endblock %}</b></h1>
+	  <h1 class="display-4"><b>{% block title %}Ultra96-V2 GPIO LEDs{% endblock %}</b></h1>
         </div>
    
 
-	<img class="center-block img-responsive"  src="static/images/ultra96_led.png" onclick="showImageModal(this)"/>
+	<img class="center-block img-responsive"  src="static/images/ultra96-v2_rev1_led.png" onclick="showImageModal(this)"/>
 
 	<!--
         User LEDs 0-3 dropbdown button options as well as LED triggers and LED brightness notifications
 	-->
 	<div class="row text-center">
-	<td><b>LED0/DS2</b><br>
+	<td><b>LED0/D3</b><br>
           <select id="dropdown">
 	    <option disabled="disabled" selected="selected" value="0">Unknown</option>
 	    <option value="0">On</option>
@@ -71,7 +75,7 @@
             <option value="0">Linux rfkill1</option>
 	  </select>
 	</td><br><br>
-	<td><b>LED1/DS3</b><br>
+	<td><b>LED1/D4</b><br>
           <select id="dropdown">
 	    <option disabled="disabled" selected="selected" value="1" readonly="true">Unknown</option>
 	    <option value="1">On</option>
@@ -98,34 +102,7 @@
 	  </select>
 	  </select>
 	</td><br><br>
-	<td><b>LED2/DS5</b><br>
-          <select id="dropdown">
-            <option disabled="disabled" selected="selected" value="2">Unknown</option>
-	    <option value="2">On</option>
-	    <option value="2">Off</option>
-            <option value="2">Linux Heartbeat</option>
-            <option value="2">Linux backlight</option>
-            <option value="2">Linux gpio</option>
-            <option value="2">Linux cpu0</option>
-            <option value="2">Linux cpu1</option>
-            <option value="2">Linux cpu2</option>
-            <option value="2">Linux cpu3</option>
-            <option value="2">Linux default-on</option>
-            <option value="2">Linux transient</option>
-            <option value="2">Linux flash</option>
-            <option value="2">Linux torch</option>
-            <option value="2">Linux mmc1</option>
-            <option value="2">Linux rfkill0</option>
-            <option value="2">Linux phy0tx</option>
-            <option value="2">Linux phy0rx</option>
-            <option value="2">Linux phy0assoc</option>
-            <option value="2">Linux phy0radio</option>
-            <option value="2">Linux hci0-power</option>
-            <option value="2">Linux rfkill1</option>
-	  </select>
-	  </select>
-	</td><br><br>
-	<td><b>LED3/DS4</b><br>
+	<td><b>LED2/D6</b><br>
           <select id="dropdown">
             <option disabled="disabled" selected="selected" value="3">Unknown</option>
 	    <option value="3">On</option>
@@ -151,6 +128,33 @@
             <option value="3">Linux rfkill1</option>
 	  </select>
 	  </select>
+	</td><br><br>
+	<td><b>LED3/D7</b><br>
+          <select id="dropdown">
+            <option disabled="disabled" selected="selected" value="2">Unknown</option>
+	    <option value="2">On</option>
+	    <option value="2">Off</option>
+            <option value="2">Linux Heartbeat</option>
+            <option value="2">Linux backlight</option>
+            <option value="2">Linux gpio</option>
+            <option value="2">Linux cpu0</option>
+            <option value="2">Linux cpu1</option>
+            <option value="2">Linux cpu2</option>
+            <option value="2">Linux cpu3</option>
+            <option value="2">Linux default-on</option>
+            <option value="2">Linux transient</option>
+            <option value="2">Linux flash</option>
+            <option value="2">Linux torch</option>
+            <option value="2">Linux mmc1</option>
+            <option value="2">Linux rfkill0</option>
+            <option value="2">Linux phy0tx</option>
+            <option value="2">Linux phy0rx</option>
+            <option value="2">Linux phy0assoc</option>
+            <option value="2">Linux phy0radio</option>
+            <option value="2">Linux hci0-power</option>
+            <option value="2">Linux rfkill1</option>
+	  </select>
+	  </select>
         </td>
 	</div>
 
@@ -171,7 +175,7 @@
 
 	<h2>Instructions</h2>
         <div class="well">
-         <p>There are 4 GPIO LEDs on the Ultra96 that can be controlled by the user and are located as shown in the image above. A user can control the LEDs through this webapp by changing what state they should be or what trigger they should be. The states are simply "On" and "Off" but the triggers are more confusing since they can provide more useful information to the user. The table of triggers and what they do is listed below. It is important to note that the triggers only turn "On"  when triggered and start in the "Off" state. </p>
+         <p>There are 4 GPIO LEDs on the Ultra96-V2 that can be controlled by the user and are located as shown in the image above. A user can control the LEDs through this webapp by changing what state they should be or what trigger they should be. The states are simply "On" and "Off" but the triggers are more confusing since they can provide more useful information to the user. The table of triggers and what they do is listed below. It is important to note that the triggers only turn "On"  when triggered and start in the "Off" state. </p>
         </div>
 
 
