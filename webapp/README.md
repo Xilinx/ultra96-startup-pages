@@ -18,5 +18,5 @@ Maintainers, Patches/Submissions, Community
 
 Maintainers:
 
-  Bhargava Sreekantappa Gayathri (bhargava.sreekantappa-gayathri@xilinx.com)
-
+ Sai Hari Chandana Kalluri <chandana.kalluri@xilinx.com>
+ Manjukumar Matha <manjukumar.harthikote-matha@xilinx.com>
