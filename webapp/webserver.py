@@ -1,29 +1,24 @@
 ###############################################################################
 #
-# Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
+# Copyright (C) 2019 Xilinx, Inc.  All rights reserved.
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in
+# the Software without restriction, including without limitation the rights to
+# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+# of the Software, and to permit persons to whom the Software is furnished to do
+# so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
-# OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# AUTHORS OR COPYRIGHT HOLDERS  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#
-# Except as contained in this notice, the name of the Xilinx shall not be used
-# in advertising or otherwise to promote the sale, use or other dealings in
-# this Software without prior written authorization from Xilinx.
-#
 ###############################################################################
 #
 # Author: Michael Chyziak <chyziak@xilinx.com>
@@ -43,6 +38,7 @@ import time
 import multiprocessing
 import signal
 import uuid
+import re
 
 CUR_DIRECTORY = os.path.split(os.path.abspath(__file__))[0]
 ALERT = -1
@@ -60,34 +56,65 @@ pconn, cconn = Pipe()
 def home():
 
 	raw = subprocess.check_output(['ifconfig','-a'])
-	line = raw.find('wlan')
+	line = raw.find(b'wlan')
 	raw = raw[line:]
-	hwline = raw.find("HWaddr")
+	hwline = raw.find(b"HWaddr")
 	raw = raw[hwline+6:hwline+24]
-	raw = raw.replace(":","")
-	return render_template("Home/home.html", value=raw)
+	raw = raw.replace(b":",b"")
+	return render_template("Home/home.html", value=raw.decode('utf-8'))
+
+def connect_to_wifi(name,passphrase):
+        name=name
+        passphrase=passphrase
+        ssid=""
+        service_name=""
+        wififound=""
+        os.system("connmanctl enable wifi")
+        os.system("connmanctl scan wifi")
+        proc = subprocess.Popen("connmanctl services", stdout=subprocess.PIPE,shell=True)
+        out=proc.communicate()[0].decode("utf-8")
+        if name not in out:
+               return 0 
+        else:
+               temp=out.split("\n")
+               for a in temp:
+                      if name in a:
+                            a=re.sub(' +',' ',a)
+                            wififound=a.split(" ")[2]
+                            service_name="[service_"+wififound+"]"
+                            ssid=wififound.split("_")[2]
+                            break
+        f = open("/var/lib/connman/ultra96.config", "w")
+        f.write("%s\n"%service_name)
+        f.write("Type=wifi\n")
+        f.write("SSID=%s\n"%ssid)
+        f.write("Passphrase=%s\n"%passphrase)
+        connectcmd="connmanctl connect "+wififound
+        os.system(connectcmd)
+        return wififound
+
 
 def createWiFi(output):
     open_ssid = []
     password_ssid = []
-    password = "no"
-    ssid = ""
+    ssid =False
+    password = False
     for line in output.splitlines():
-        line = line.strip()
-        if "Encryption" in line:
-            if "off" not in line:
-                password = "yes"
-        else:
-            line = line.replace("ESSID:", "")
-            line = line.replace("\"", "")
-            if line:
-               ssid = line
-               if "yes" in password:
-                   password_ssid.append(line)
-               else:
-                   open_ssid.append(line) 
-            password = "no"
-            ssid = ""
+        line.strip()
+        if "SSID" in line:
+            ssid_list = line.split(": ")
+            if len(ssid_list) == 2:
+                ssid_name = ssid_list[1]
+            ssid = True
+        elif "RSN" in line:
+            password = True
+        elif "BSS" in line:
+            if ssid and password:
+                password_ssid.append(ssid_name)
+            if ssid and not password: 
+                open_ssid.append(ssid_name)
+            ssid =  False
+            password = False
     return (open_ssid, password_ssid)
 
 @app.route('/information.html')
@@ -117,6 +144,7 @@ def webapp_boot():
 
 @app.route('/wifi_setup.html', methods=['GET', 'POST'])
 def wifi_setup():
+    wificonnected=""
     is_connected = check_connection()
     if request.method == 'POST':
         if 'ssid' in request.form:
@@ -129,46 +157,45 @@ def wifi_setup():
                 if p != 0:
                     success = "none"
                     return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="block", con_pass="none", con_fail="none", ssid="")        
-            f = open("/etc/wpa_supplicant.conf", "w")
-            f.write("ctrl_interface=/var/run/wpa_supplicant\n")
-            f.write("ctrl_interface_group=0\n")
-            f.write("update_config=1\n\n")
-            f.write("network={\n")
-            f.write("\tssid=\""+ssid+"\"\n")
-            f.write("\tscan_ssid=1\n")
-            if passphrase != "":
-	    	f.write("\tkey_mgmt=WPA-PSK\n")
-            	f.write("\tpsk=\""+passphrase+"\"\n")
-            else:
-	    	f.write("\tkey_mgmt=NONE\n")
-            f.write("}\n")
-            f.close()
-            os.system("ifup wlan0")
+            
+            wificonnected=connect_to_wifi(ssid,passphrase)
+            if wificonnected == 0:
+                    success = "none"		
+                    return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="block", con_pass="none", con_fail="none", ssid="")        
+
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="block", failure="none", con_pass="none", con_fail="none", ssid="")
         elif 'refresh' in request.form:
-            if os.path.exists("/etc/wpa_supplicant.conf"):
-                f = open("/etc/wpa_supplicant.conf", "w")
-                f.write("Ultra96 Webapp Write")
-                f.close()
-            os.system("ifup wlan0")
+            os.system("ip link set dev wlan0 up")
             i = 0 
-            while i < 10:
+            while i < 5:
                 i = i+1
-                p = subprocess.Popen("iwlist wlan0 scanning | egrep \"ESSID|Encryption\"", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-                output, err = p.communicate()
-                if output: 
+                p = subprocess.Popen("iw wlan0 scan", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                output_encoded, err = p.communicate()
+                output=output_encoded.decode('utf-8')
+                if "SSID" in output:
                     open_ssid, password_ssid = createWiFi(output)
-                    os.system("ifdown wlan0")
+                    #os.system("ip link set dev wlan0 down")
                     return render_template("Configurations/wifi_setup.html", open_ssid=open_ssid, password_ssid=password_ssid, connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")
         elif 'disconnect' in request.form:
-            p = subprocess.call("ifdown wlan0", stdout=subprocess.PIPE, shell=True)
+            f=open("/var/lib/connman/ultra96.config","r")
+            out=f.readline()
+            wificonnected=out.split("service_")[1].split("]")[0]
+            disconnectcmd="connmanctl disconnect "+wificonnected
+            print("wificonnected=%s"%wificonnected)
+            os.system(disconnectcmd)
             is_connected = check_connection()
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")            
         else:
-            p = subprocess.Popen("iwgetid", stdout=subprocess.PIPE, shell=True)
-            ssid_output = p.communicate()[0]
-            if ssid_output == "":
+            p = subprocess.Popen("iw wlan0 info", stdout=subprocess.PIPE, shell=True)
+            ssid_output_encoded = p.communicate()[0]
+            ssid_output = ssid_output_encoded.decode('utf-8')
+            ssid = ""
+            for line in ssid_output.splitlines():
+                line.strip()
+                if "ssid" in line:
+                    ssid = line.split("ssid ")[1]
+            if ssid == "":
                 return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="block", ssid="")
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="block", con_fail="none", ssid=ssid_output)
     else:
@@ -212,7 +239,7 @@ def password():
 @app.route('/dnf_update.html', methods=['GET', 'POST'])
 def dnf_update():
     if request.method == 'POST':
-        p = subprocess.Popen("iwgetid", stdout=subprocess.PIPE, shell=True)
+        p = subprocess.Popen("iw wlan0 info | grep ssid", stdout=subprocess.PIPE, shell=True)
         ssid_output = p.communicate()[0]
         if ssid_output != "":
             os.system("dnf repoquery")
@@ -349,7 +376,7 @@ def tweeting_doorbell():
            timer_status="timer_disabled"
            return render_template("Projects/tweeting_doorbell.html", timeout=timeout, remaining_time=timeout, timer_status=timer_status)
 
-        if "usr_key" in request.form:
+        if request.form['submit'] == 'key_val':
             usr_key = request.form["usr_key"]
             usr_secret = request.form["usr_secret"]
             usr_token = request.form["usr_token"]
@@ -360,7 +387,6 @@ def tweeting_doorbell():
             f.write("access_token = \"" +usr_token + "\"\n")
             f.write("access_token_secret = \"" +usr_token_secret + "\"\n")
             f.close()
-            print request.form
             return render_template("Projects/tweeting_doorbell.html", usr_key=usr_key, usr_secret=usr_secret, usr_token=usr_token, usr_token_secret=usr_token_secret, timeout=timeout, remaining_time=timeout, timer_status=timer_status, twitter="", missing_keys="none")
         timeout = request.form['timeout']
         timer_status = "timer_enabled"
@@ -369,8 +395,8 @@ def tweeting_doorbell():
         if os.path.exists("/usr/share/Sensor_Mezzanine_Getting_Started/tweeting_doorbell/keys.py"):
             runme_proc = subprocess.Popen("sh run_me.sh "+request.form["twitter"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
             output = ""
-            while "python tweeting_doorbell.py" not in output :
-                output = runme_proc.stdout.readline()
+            while "flash:w:build-uno/tweeting_doorbell.hex" not in output :
+                output = runme_proc.stdout.readline().decode('utf-8')
             timer_status = "timer_enabled"
             multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
             os.chdir(CUR_DIRECTORY)
@@ -404,8 +430,8 @@ def temp_display():
         os.chdir("/usr/share/Sensor_Mezzanine_Getting_Started/humid_temp/")
         runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
         output = ""
-        while "python humid_temp.py" not in output :
-             output = runme_proc.stdout.readline()
+        while "flash:w:build-uno/humid_temp.hex" not in output:
+             output = runme_proc.stdout.readline().decode('utf-8')
         timer_status = "timer_enabled"
         multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
         os.chdir(CUR_DIRECTORY)
@@ -451,8 +477,8 @@ def viewer():
             runme_proc = subprocess.Popen("sh run_me.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, preexec_fn=os.setpgrp)
             multiprocessing.Process(target=thread_run, args=(runme_proc, timeout, cconn)).start()
             os.chdir(CUR_DIRECTORY)
-            output, err = p.communicate()
-            return render_template("Projects/viewer.html", code=code, filename=os.path.basename(request.args.get('filename')), log=output+"\n"+err)
+            output, err = runme_proc.communicate()
+            return render_template("Projects/viewer.html", code=code, filename=os.path.basename(request.args.get('filename')), log=output.decode('utf-8')+"\n"+err.decode('utf-8'))
     else:
         code = "ERROR: Could not find file"
         if os.path.exists("/usr/share/Sensor_Mezzanine_Getting_Started/"+request.args.get('filename')):
@@ -723,7 +749,7 @@ def uploaded_editor():
     else:
         code = "Could not read file"
         if os.path.exists(CUR_DIRECTORY+"/templates/CustomContent/uploaded_files/"+request.args.get('filename')):
-            with open(CUR_DIRECTORY+"/templates/CustomContent/uploaded_files/"+request.args.get('filename'), "r") as f:
+            with open(CUR_DIRECTORY+"/templates/CustomContent/uploaded_files/"+request.args.get('filename'), "r",encoding="utf-8") as f:
                 code = f.read()
             f.close()
         return render_template("CustomContent/uploaded_editor.html", filesaved="none", filemissing="none", filename=request.args.get('filename'), code=code)
@@ -879,9 +905,16 @@ def thread_run(proc, timeout, cconn):
     output,err = proc.communicate()
 
 def check_connection():
-    p = subprocess.Popen("iwgetid", stdout=subprocess.PIPE, shell=True)
-    ssid_output = p.communicate()[0]
-    if ssid_output != "":
+    p = subprocess.Popen("iw wlan0 info", stdout=subprocess.PIPE, shell=True)
+    ssid_output_encoded = p.communicate()[0]
+    ssid_output = ssid_output_encoded.decode('utf-8')
+    ssid = ""
+    for line in ssid_output.splitlines():
+        line.strip()
+        if "ssid" in line:
+            ssid = line.split("ssid ")[1]
+
+    if ssid != "":
         return "true"
     return "false"
 
