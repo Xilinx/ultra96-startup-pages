@@ -1,24 +1,29 @@
 ###############################################################################
 #
-# Copyright (C) 2019 Xilinx, Inc.  All rights reserved.
+# Copyright (C) 2016 - 2017 Xilinx, Inc.  All rights reserved.
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-# of the Software, and to permit persons to whom the Software is furnished to do
-# so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+# OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+#
+# Except as contained in this notice, the name of the Xilinx shall not be used
+# in advertising or otherwise to promote the sale, use or other dealings in
+# this Software without prior written authorization from Xilinx.
+#
 ###############################################################################
 #
 # Author: Michael Chyziak <chyziak@xilinx.com>
@@ -38,7 +43,6 @@ import time
 import multiprocessing
 import signal
 import uuid
-import re
 
 CUR_DIRECTORY = os.path.split(os.path.abspath(__file__))[0]
 ALERT = -1
@@ -62,37 +66,6 @@ def home():
 	raw = raw[hwline+6:hwline+24]
 	raw = raw.replace(b":",b"")
 	return render_template("Home/home.html", value=raw.decode('utf-8'))
-
-def connect_to_wifi(name,passphrase):
-        name=name
-        passphrase=passphrase
-        ssid=""
-        service_name=""
-        wififound=""
-        os.system("connmanctl enable wifi")
-        os.system("connmanctl scan wifi")
-        proc = subprocess.Popen("connmanctl services", stdout=subprocess.PIPE,shell=True)
-        out=proc.communicate()[0].decode("utf-8")
-        if name not in out:
-               return 0 
-        else:
-               temp=out.split("\n")
-               for a in temp:
-                      if name in a:
-                            a=re.sub(' +',' ',a)
-                            wififound=a.split(" ")[2]
-                            service_name="[service_"+wififound+"]"
-                            ssid=wififound.split("_")[2]
-                            break
-        f = open("/var/lib/connman/ultra96.config", "w")
-        f.write("%s\n"%service_name)
-        f.write("Type=wifi\n")
-        f.write("SSID=%s\n"%ssid)
-        f.write("Passphrase=%s\n"%passphrase)
-        connectcmd="connmanctl connect "+wififound
-        os.system(connectcmd)
-        return wififound
-
 
 def createWiFi(output):
     open_ssid = []
@@ -144,7 +117,6 @@ def webapp_boot():
 
 @app.route('/wifi_setup.html', methods=['GET', 'POST'])
 def wifi_setup():
-    wificonnected=""
     is_connected = check_connection()
     if request.method == 'POST':
         if 'ssid' in request.form:
@@ -157,33 +129,41 @@ def wifi_setup():
                 if p != 0:
                     success = "none"
                     return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="block", con_pass="none", con_fail="none", ssid="")        
-            
-            wificonnected=connect_to_wifi(ssid,passphrase)
-            if wificonnected == 0:
-                    success = "none"		
-                    return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="block", con_pass="none", con_fail="none", ssid="")        
-
+            f = open("/etc/wpa_supplicant.conf", "w")
+            f.write("ctrl_interface=/var/run/wpa_supplicant\n")
+            f.write("ctrl_interface_group=0\n")
+            f.write("update_config=1\n\n")
+            f.write("network={\n")
+            f.write("\tssid=\""+ssid+"\"\n")
+            f.write("\tscan_ssid=1\n")
+            if passphrase != "":
+                f.write("\tkey_mgmt=WPA-PSK\n")
+                f.write("\tpsk=\""+passphrase+"\"\n")
+            else:
+                f.write("\tkey_mgmt=NONE\n")
+            f.write("}\n")
+            f.close()
+            os.system("ifup wlan0")
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="block", failure="none", con_pass="none", con_fail="none", ssid="")
         elif 'refresh' in request.form:
-            os.system("ip link set dev wlan0 up")
+            if os.path.exists("/etc/wpa_supplicant.conf"):
+                f = open("/etc/wpa_supplicant.conf", "w")
+                f.write("Ultra96 Webapp Write")
+                f.close()
+            os.system("ifup wlan0")
             i = 0 
-            while i < 5:
+            while i < 3:
                 i = i+1
                 p = subprocess.Popen("iw wlan0 scan", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
                 output_encoded, err = p.communicate()
                 output=output_encoded.decode('utf-8')
                 if "SSID" in output:
                     open_ssid, password_ssid = createWiFi(output)
-                    #os.system("ip link set dev wlan0 down")
+                    os.system("ifconfig wlan0 down")
                     return render_template("Configurations/wifi_setup.html", open_ssid=open_ssid, password_ssid=password_ssid, connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")
         elif 'disconnect' in request.form:
-            f=open("/var/lib/connman/ultra96.config","r")
-            out=f.readline()
-            wificonnected=out.split("service_")[1].split("]")[0]
-            disconnectcmd="connmanctl disconnect "+wificonnected
-            print("wificonnected=%s"%wificonnected)
-            os.system(disconnectcmd)
+            p = subprocess.call("ifconfig wlan0 down", stdout=subprocess.PIPE, shell=True)
             is_connected = check_connection()
             return render_template("Configurations/wifi_setup.html", open_ssid=[], password_ssid=[], connected=is_connected, success="none", failure="none", con_pass="none", con_fail="none", ssid="")            
         else:
